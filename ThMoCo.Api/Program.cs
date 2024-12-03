@@ -1,11 +1,31 @@
+using Microsoft.EntityFrameworkCore;
+using ThMoCo.Api.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+// Add Swagger for API documentation in development
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Configure services based on environment
+if (builder.Environment.IsDevelopment())
+{
+    Console.WriteLine("Registering LocalProductService as IProductService");
+    builder.Services.AddSingleton<IProductService, LocalProductService>();
+}
+else
+{
+    Console.WriteLine("Registering ProductService as IProductService");
+    builder.Services.AddDbContext<ProductsContext>(options =>
+    {
+        var cs = builder.Configuration.GetConnectionString("ConnectionString");
+        options.UseSqlServer(cs);
+    });
+    builder.Services.AddScoped<IProductService, ProductService>();
+}
 
 var app = builder.Build();
 
