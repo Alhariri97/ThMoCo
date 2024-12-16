@@ -24,8 +24,8 @@ $client_secret = $settings.client_secret
 ```
 
 
-# For DevAh env.
-# Run the Terraform command with the extracted values
+## For DevAh env.
+## Run the Terraform command with the extracted values
 
 ```
 terraform init -backend-config=".\environments\devah\devah-backend.tfvars" -backend-config="access_key=$access_key" -reconfigure
