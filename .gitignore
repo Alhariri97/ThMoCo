@@ -364,5 +364,8 @@ FodyWeavers.xsd
 
 # appsettings - ignore appsettings.json coz might have some sensitive info
 appsettings.json
+# Exclude settings.json
+settings.json
 
+*/.terraform
 
