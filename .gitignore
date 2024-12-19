@@ -369,7 +369,6 @@ settings.json
 
 */.terraform
 
-*/ThMoCo.Api/appsettings.json
-*/appsettings.json
-./appsettings.json
-*//appsettings
+# Ignore appsettings.json in the root and ThMoCo.Api directories
+/appsettings.json
+/ThMoCo.Api/appsettings.json
