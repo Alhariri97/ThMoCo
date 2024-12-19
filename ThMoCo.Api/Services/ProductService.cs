@@ -1,4 +1,8 @@
-﻿namespace ThMoCo.Api.Data;
+﻿using ThMoCo.Api.Data;
+using ThMoCo.Api.DTO;
+using ThMoCo.Api.IServices;
+
+namespace ThMoCo.Api.Services;
 
 public class ProductService : IProductService
 {
@@ -9,12 +13,12 @@ public class ProductService : IProductService
         _context = context;
     }
 
-    public List<Product> GetProducts()
+    public List<ProductDTO> GetProducts()
     {
         return _context.Products.ToList();
     }
 
-    public Product? GetProductById(int id)
+    public ProductDTO? GetProductById(int id)
     {
         return _context.Products.FirstOrDefault(p => p.Id == id);
     }

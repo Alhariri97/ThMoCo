@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using ThMoCo.Api.Data;
+using ThMoCo.Api.IServices;
 
 namespace ThMoCo.Api.Controllers;
 
