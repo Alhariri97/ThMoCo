@@ -1,91 +1,215 @@
 
-name: build-and-deploy-web-app
+# name: build-and-deploy-web-app
+
+# on:
+#   push:
+#     branches:
+#       - main
+#   workflow_dispatch:
+
+# env:
+#   DOTNET_VERSION: 8.0.x
+#   BUILD_CONFIGURATION: Release
+#   PROJECT_PATH: ./ThMoCo.Api
+#   PUBLISH_PATH: ./myapp
+#   TESTRESULTS_PATH: ./ThMoCo.Tests
+#   AZURE_WEBAPP_NAME: thamcodevah-app
+#   AZURE_RG_Name: thamco-devah-rg
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-22.04
+#     steps:
+#       - uses: actions/checkout@v3
+#       - name: Install dotnet
+#         uses: actions/setup-dotnet@v3
+#         with:
+#           dotnet-version: ${{ env.DOTNET_VERSION }}
+#       - name: Install dependencies
+#         run: dotnet restore
+#       - name: Build code
+#         run: |
+#           dotnet build \
+#             --configuration $BUILD_CONFIGURATION \
+#             --no-restore
+#       - name: Run unit tests
+#         run: |
+#           dotnet test \
+#             --configuration $BUILD_CONFIGURATION \
+#             --no-build \
+#             --logger trx \
+#             --results-directory $TESTRESULTS_PATH
+#       - name: Store test results
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: test-results
+#           path: ${{ env.TESTRESULTS_PATH }}
+#         if: ${{ always() }}
+#       - name: Package build
+#         run: |
+#           dotnet publish $PROJECT_PATH \
+#             --configuration $BUILD_CONFIGURATION \
+#             --no-build \
+#             --output $PUBLISH_PATH
+#       - name: Debug artifact path
+#         run: ls -R ${{ env.PUBLISH_PATH }}
+#       - name: Store build artefact
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: build
+#           path: ${{ env.PUBLISH_PATH }}
+
+#   deploy-to-azure:
+#     runs-on: ubuntu-22.04
+#     needs: build
+#     steps:
+#       - uses: azure/login@v2
+#         with:
+#           creds: ${{ secrets.AZURE_CREDENTIALS }}
+#       - name: Azure CLI script
+#         uses: azure/cli@v2
+#         with:
+#           azcliversion: latest
+#           inlineScript: |
+#             az account show
+#       - uses: actions/download-artifact@v4 
+#         with:
+#           name: build
+#           path: ${{ env.PUBLISH_PATH }}
+#       - name: Deploy to Azure Web App
+#         id: deploy-to-webapp
+#         uses: azure/webapps-deploy@v2
+#         with:
+#           app-name: ${{ env.AZURE_WEBAPP_NAME }}
+#           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+#           package: ${{ env.PUBLISH_PATH }}
+#       - name: Set Environment Variables
+#         run: |
+#           az webapp config appsettings set \
+#               --name ${{ env.AZURE_WEBAPP_NAME }} \
+#               --resource-group ${{env.AZURE_RG_Name}} \
+#               --settings "ConnectionStrings:ConnectionString= ${{secrets.DB_CONNECTION_STRING}}" 
+name: build-and-deploy-web-app  # Workflow name displayed in GitHub Actions
 
 on:
+  # Trigger the workflow on push to the 'main' branch
   push:
     branches:
       - main
+  # Allow manual triggering of the workflow from GitHub UI
   workflow_dispatch:
 
+# Define environment variables that will be used across jobs
 env:
-  DOTNET_VERSION: 8.0.x
-  BUILD_CONFIGURATION: Release
-  PROJECT_PATH: ./ThMoCo.Api
-  PUBLISH_PATH: ./myapp
-  TESTRESULTS_PATH: ./ThMoCo.Tests
-  AZURE_WEBAPP_NAME: thamcodevah-app
-  AZURE_RG_Name: thamco-devah-rg
+  DOTNET_VERSION: 8.0.x  # .NET version to use for the build process
+  BUILD_CONFIGURATION: Release  # Configuration for building the application (Release mode)
+  PROJECT_PATH: ./ThMoCo.Api  # Path to the .NET project
+  PUBLISH_PATH: ./myapp  # Output directory for the published application
+  TESTRESULTS_PATH: ./ThMoCo.Tests  # Directory for storing test results
+  AZURE_WEBAPP_NAME: thamcodevah-app  # Azure Web App name for deployment
+  AZURE_RG_Name: thamco-devah-rg  # Azure Resource Group name
 
 jobs:
+  # Job to build the .NET application
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-22.04  # Run on an Ubuntu machine
+
     steps:
-      - uses: actions/checkout@v3
+      # Step 1: Checkout the repository code
+      - uses: actions/checkout@v3  # Checkout the repository to access the code
+
+      # Step 2: Install .NET SDK
       - name: Install dotnet
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v3  # Action to set up .NET SDK
         with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
+          dotnet-version: ${{ env.DOTNET_VERSION }}  # Use the version defined in env variables
+
+      # Step 3: Restore dependencies
       - name: Install dependencies
-        run: dotnet restore
+        run: dotnet restore  # Restores project dependencies (NuGet packages)
+
+      # Step 4: Build the project
       - name: Build code
         run: |
           dotnet build \
-            --configuration $BUILD_CONFIGURATION \
-            --no-restore
+            --configuration $BUILD_CONFIGURATION \  # Use the Release configuration
+            --no-restore  # Skip restoring dependencies since it's already done
+
+      # Step 5: Run unit tests
       - name: Run unit tests
         run: |
           dotnet test \
-            --configuration $BUILD_CONFIGURATION \
-            --no-build \
-            --logger trx \
-            --results-directory $TESTRESULTS_PATH
+            --configuration $BUILD_CONFIGURATION \  # Use the Release configuration
+            --no-build \  # Skip rebuilding since it's already done
+            --logger trx \  # Log the results in trx format
+            --results-directory $TESTRESULTS_PATH  # Store test results in the specified path
+
+      # Step 6: Upload test results as artifacts
       - name: Store test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4  # Action to upload files as artifacts
         with:
-          name: test-results
-          path: ${{ env.TESTRESULTS_PATH }}
-        if: ${{ always() }}
+          name: test-results  # Artifact name
+          path: ${{ env.TESTRESULTS_PATH }}  # Path to the test results
+        if: ${{ always() }}  # Ensure that the results are uploaded even if tests fail
+
+      # Step 7: Package the build output
       - name: Package build
         run: |
           dotnet publish $PROJECT_PATH \
-            --configuration $BUILD_CONFIGURATION \
-            --no-build \
-            --output $PUBLISH_PATH
-      - name: Debug artifact path
-        run: ls -R ${{ env.PUBLISH_PATH }}
-      - name: Store build artefact
-        uses: actions/upload-artifact@v4
-        with:
-          name: build
-          path: ${{ env.PUBLISH_PATH }}
+            --configuration $BUILD_CONFIGURATION \  # Use the Release configuration
+            --no-build \  # Skip rebuilding since it's already done
+            --output $PUBLISH_PATH  # Output to the specified path
 
+      # Step 8: Debugging - List the contents of the publish folder
+      - name: Debug artifact path
+        run: ls -R ${{ env.PUBLISH_PATH }}  # List files to verify the output
+
+      # Step 9: Upload build output as artifacts for deployment
+      - name: Store build artefact
+        uses: actions/upload-artifact@v4  # Upload the build package as an artifact
+        with:
+          name: build  # Artifact name
+          path: ${{ env.PUBLISH_PATH }}  # Path to the build output
+
+  # Job to deploy the application to Azure Web App
   deploy-to-azure:
-    runs-on: ubuntu-22.04
-    needs: build
+    runs-on: ubuntu-22.04  # Run on an Ubuntu machine
+    needs: build  # Ensure the build job runs before this one
+
     steps:
-      - uses: azure/login@v2
+      # Step 1: Login to Azure using the Service Principal credentials
+      - uses: azure/login@v2  # Action to authenticate with Azure using Service Principal
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-      - name: Azure CLI script
-        uses: azure/cli@v2
+          creds: ${{ secrets.AZURE_CREDENTIALS }}  # Azure credentials stored as a secret
+
+      # # Step 2: (Optional) Run an Azure CLI script to verify the account
+      # - name: Azure CLI script
+      #   uses: azure/cli@v2  # Action to run Azure CLI commands
+      #   with:
+      #     azcliversion: latest  # Use the latest version of the Azure CLI
+      #     inlineScript: |
+      #       az account show  # Show details of the logged-in account (for debugging)
+
+      # Step 3: Download the build artifact from the previous job
+      - uses: actions/download-artifact@v4  # Action to download artifacts from the previous job
         with:
-          azcliversion: latest
-          inlineScript: |
-            az account show
-      - uses: actions/download-artifact@v4 
-        with:
-          name: build
-          path: ${{ env.PUBLISH_PATH }}
+          name: build  # Name of the artifact to download
+          path: ${{ env.PUBLISH_PATH }}  # Path to download the artifact to
+
+      # Step 4: Deploy the web app to Azure Web App
       - name: Deploy to Azure Web App
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v2
+        id: deploy-to-webapp  # Give the step an ID for later use if needed
+        uses: azure/webapps-deploy@v2  # Action to deploy to Azure Web Apps
         with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ${{ env.PUBLISH_PATH }}
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}  # The name of the Azure Web App
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}  # Publish profile from Azure
+          package: ${{ env.PUBLISH_PATH }}  # The path to the build package
+
+      # Step 5: Set environment variables in the Azure Web App
       - name: Set Environment Variables
         run: |
+          # Set the database connection string as an environment variable in the Azure Web App
           az webapp config appsettings set \
               --name ${{ env.AZURE_WEBAPP_NAME }} \
-              --resource-group ${{env.AZURE_RG_Name}} \
-              --settings "ConnectionStrings:ConnectionString= ${{secrets.DB_CONNECTION_STRING}}" 
+              --resource-group ${{ env.AZURE_RG_Name }} \
+              --settings "ConnectionStrings:ConnectionString=${{secrets.DB_CONNECTION_STRING}}"  # Connection string from GitHub Secrets
