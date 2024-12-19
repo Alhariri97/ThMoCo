@@ -132,8 +132,8 @@ jobs:
       - name: Build code
         run: |
           dotnet build \
-            --configuration $BUILD_CONFIGURATION \  # Use the Release configuration
-            --no-restore  # Skip restoring dependencies since it's already done
+            --configuration $BUILD_CONFIGURATION \
+            --no-restore
 
       # Step 5: Run unit tests
       - name: Run unit tests
