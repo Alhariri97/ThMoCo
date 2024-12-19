@@ -1,4 +1,5 @@
-﻿using ThMoCo.Api.Data;
+﻿using System.Diagnostics;
+using ThMoCo.Api.Data;
 using ThMoCo.Api.DTO;
 using ThMoCo.Api.IServices;
 
@@ -15,11 +16,30 @@ public class ProductService : IProductService
 
     public List<ProductDTO> GetProducts()
     {
-        return _context.Products.ToList();
+        try
+        {
+            var list = _context.Products.ToList();
+            return list;
+        }
+        catch (Exception ex)
+        {
+            // Log the exception
+            Debug.WriteLine($"Error fetching products: {ex.Message}");
+            throw new Exception($"Error getting data from the database. {ex.Message}");
+        }
     }
 
     public ProductDTO? GetProductById(int id)
     {
-        return _context.Products.FirstOrDefault(p => p.Id == id);
+        try
+        {
+            return _context.Products.FirstOrDefault(p => p.Id == id);
+        }
+        catch (Exception ex)
+        {
+            // Log the exception
+            Debug.WriteLine($"Error fetching product with ID {id}: {ex.Message}");
+            throw new Exception("Error getting data from the database.");
+        }
     }
 }
