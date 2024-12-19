@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using ThMoCo.Api.IServices;
 
 namespace ThMoCo.Api.Controllers;
@@ -9,10 +10,20 @@ namespace ThMoCo.Api.Controllers;
 public class ProductsController : ControllerBase
 {
     private readonly IProductService _productService;
+    private readonly IConfiguration _configuration;
 
-    public ProductsController(IProductService productService)
+    public ProductsController(IProductService productService, IConfiguration configuration)
     {
         _productService = productService;
+        _configuration = configuration;
+
+    }
+
+    [HttpGet("connection-string")]
+    public IActionResult GetAny()
+    {
+        string connectionString = _configuration.GetValue<string>("ConnectionStrings:ConnectionString");
+        return Ok(new { ConnectionString = connectionString });
     }
 
 

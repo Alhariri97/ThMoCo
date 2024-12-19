@@ -12,46 +12,22 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//// Configure services based on environment
-//if (builder.Environment.IsDevelopment())
-//{
-//    Console.WriteLine("Registering LocalProductService as IProductService");
-//    builder.Services.AddSingleton<IProductService, LocalProductService>();
-//}
-//else
-//{
-//    Console.WriteLine("Registering ProductService as IProductService");
-//    builder.Services.AddDbContext<ProductsContext>(options =>
-//    {
-//        var cs = builder.Configuration.GetConnectionString("ConnectionString");
-//        options.UseSqlServer(cs);
-//    });
-//    builder.Services.AddScoped<IProductService, ProductService>();
-//}
-
-
-Console.WriteLine("Registering ProductService as IProductService");
-builder.Services.AddDbContext<ProductsContext>(options =>
+// Configure services based on environment
+if (builder.Environment.IsDevelopment())
 {
-    var cs = builder.Configuration.GetConnectionString("ConnectionString");
-    if (string.IsNullOrEmpty(cs))
+    Console.WriteLine("Registering LocalProductService as IProductService");
+    builder.Services.AddSingleton<IProductService, LocalProductService>();
+}
+else
+{
+    Console.WriteLine("Registering ProductService as IProductService");
+    builder.Services.AddDbContext<ProductsContext>(options =>
     {
-        Console.WriteLine("Connection string not found or is empty.");
-        throw new InvalidOperationException("Database connection string is not configured.");
-    }
-    else
-    {
-        Console.WriteLine("Connection string successfully loaded.");
-    }
-
-    options.UseSqlServer(cs);
-});
-
-builder.Services.AddScoped<IProductService, ProductService>();
-
-
-
-///////////////////////
+        var cs = builder.Configuration.GetConnectionString("ConnectionString");
+        options.UseSqlServer(cs);
+    });
+    builder.Services.AddScoped<IProductService, ProductService>();
+}
 
 
 var app = builder.Build();
