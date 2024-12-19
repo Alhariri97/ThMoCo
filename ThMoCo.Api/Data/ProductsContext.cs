@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ThMoCo.Api.DTO;
 
 namespace ThMoCo.Api.Data;
 
@@ -9,13 +10,13 @@ public class ProductsContext : DbContext
     {
     }
 
-    public DbSet<Product> Products { get; set; } = null!;
+    public DbSet<ProductDTO> Products { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<Product>(entity =>
+        modelBuilder.Entity<ProductDTO>(entity =>
         {
             entity.HasKey(p => p.Id);
             entity.Property(p => p.Name).IsRequired().HasMaxLength(100);
