@@ -164,4 +164,4 @@ jobs:
           az webapp config appsettings set \
               --name ${{ env.AZURE_WEBAPP_NAME }} \
               --resource-group ${{env.AZURE_RG_Name}} \
-              --settings "ENV_VARIABLE_1=value1" "ENV_VARIABLE_2=value2"
+              --settings "ConnectionStrings:ConnectionString= ${{secrets.DB_CONNECTION_STRING}}" 
