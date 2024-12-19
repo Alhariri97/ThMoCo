@@ -369,3 +369,7 @@ settings.json
 
 */.terraform
 
+*/ThMoCo.Api/appsettings.json
+*/appsettings.json
+./appsettings.json
+*//appsettings
