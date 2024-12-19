@@ -3,20 +3,18 @@ name: build-and-deploy-web-app
 on:
   push:
     branches:
-      - main  # Trigger the workflow only on push to main
+      - main
   workflow_dispatch:
-  
+
 env:
   DOTNET_VERSION: 8.0.x
   BUILD_CONFIGURATION: Release
-  PROJECT_PATH: ./ThMoCo.Api         # set this to the directory path of your project
+  PROJECT_PATH: ./ThMoCo.Api
   PUBLISH_PATH: ./myapp
   TESTRESULTS_PATH: ./ThMoCo.Tests
-  AZURE_WEBAPP_NAME: thamcodevah-app  # set this to your Azure's app name
-
+  AZURE_WEBAPP_NAME: thamcodevah-app
 
 jobs:
-
   build:
     runs-on: ubuntu-22.04
     steps:
@@ -44,46 +42,42 @@ jobs:
         with:
           name: test-results
           path: ${{ env.TESTRESULTS_PATH }}
-        if: ${{ always() }} # ensures test results uploaded even after failure
+        if: ${{ always() }}
       - name: Package build
         run: |
           dotnet publish $PROJECT_PATH \
             --configuration $BUILD_CONFIGURATION \
             --no-build \
             --output $PUBLISH_PATH
+      - name: Debug artifact path
+        run: ls -R ${{ env.PUBLISH_PATH }}
       - name: Store build artefact
         uses: actions/upload-artifact@v4
         with:
           name: build
           path: ${{ env.PUBLISH_PATH }}
 
-
   deploy-to-azure:
     runs-on: ubuntu-22.04
     needs: build
-#   environment:
-#     name: 'production'
-#     url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-#   if: github.ref == 'refs/heads/master'
     steps:
       - uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-      - name: Azure CLI scrip
+      - name: Azure CLI script
         uses: azure/cli@v2
         with:
           azcliversion: latest
           inlineScript: |
             az account show
-            
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4 
         with:
           name: build
           path: ${{ env.PUBLISH_PATH }}
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
-        with: 
+        with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE  }} # Define secret in GitHub with contents of Publish Profile
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: ${{ env.PUBLISH_PATH }}
