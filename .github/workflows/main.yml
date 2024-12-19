@@ -4,9 +4,10 @@ on:
   push:
     branches:
       - main  # Trigger the workflow only on push to main
-
+  workflow_dispatch:
+  
 env:
-  DOTNET_VERSION: 6.0.x
+  DOTNET_VERSION: 8.0.x
   BUILD_CONFIGURATION: Release
   PROJECT_PATH: ./ThMoCo.Api         # set this to the directory path of your project
   PUBLISH_PATH: ./myapp
