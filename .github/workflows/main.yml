@@ -116,5 +116,7 @@ jobs:
           az webapp config appsettings set \
               --name ${{ env.AZURE_WEBAPP_NAME }} \
               --resource-group ${{env.AZURE_RG_Name}} \
-              --settings "ConnectionStrings:ConnectionString= ${{secrets.DB_CONNECTION_STRING}}" 
+              --settings \
+                "ConnectionStrings:ConnectionString= ${{secrets.DB_CONNECTION_STRING}}" \
+                "EnableSwaggerInProduction=true"
 ###################################################
