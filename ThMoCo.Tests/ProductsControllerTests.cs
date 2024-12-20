@@ -1,4 +1,3 @@
-namespace ThMoCo.Tests;
 using Moq;
 using Xunit;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +7,7 @@ using ThMoCo.Api.Controllers;
 using ThMoCo.Api.DTO;
 using ThMoCo.Api.IServices;
 
+namespace ThMoCo.Tests.Units;
 public class ProductsControllerTests
 {
     private readonly Mock<IProductService> _mockProductService;
