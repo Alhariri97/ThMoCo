@@ -65,3 +65,9 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+// Explicitly define the Program class for integration testing purposes
+namespace ThMoCo.Api
+{
+    public partial class Program { }
+}
