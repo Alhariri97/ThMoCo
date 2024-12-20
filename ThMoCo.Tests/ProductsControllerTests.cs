@@ -92,25 +92,28 @@ public class ProductsControllerTests
         Assert.Equal(2, returnedStock.Count);
     }
 
-    //[Fact]
-    //public async Task UpdateProductCatalog_ValidProducts_ReturnsOkResult()
-    //{
-    //    // Arrange
-    //    var updatedProducts = new List<ProductDTO>
-    //    {
-    //        new ProductDTO { Id = 1, Name = "Product1", Price = 20.0m }
-    //    };
+    [Fact]
+    public async Task UpdateProductCatalog_ValidProducts_ReturnsOkResult()
+    {
+        // Arrange
+        var updatedProducts = new List<ProductDTO>
+        {
+                new ProductDTO { Name = "Laptop 99", Price = 999.99m, Category = "Electronics", StockQuantity = 10, IsAvailable = true, ImageUrl = "http://example.com/laptop.jpg", CreatedDate = DateTime.Now.AddMonths(-6), UpdatedDate = DateTime.Now, Description = "A high-performance laptop for work and gaming." },
+        };
 
-    //    _mockProductService.Setup(service => service.UpdateProductCatalog(updatedProducts))
-    //                       .Returns(Task.CompletedTask);
+        _mockProductService.Setup(service => service.UpdateProductCatalog(updatedProducts))
+                           .Returns(Task.CompletedTask);
 
-    //    // Act
-    //    var result = await _controller.UpdateProductCatalog(updatedProducts);
+        // Act
+        var result = await _controller.UpdateProductCatalog(updatedProducts);
 
-    //    // Assert
-    //    var okResult = Assert.IsType<OkObjectResult>(result);
-    //    Assert.Equal("Product catalog updated successfully.", ((dynamic)okResult.Value).message);
-    //}
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result); // Ensure OkObjectResult is returned
+        Assert.NotNull(okResult.Value); // Ensure Value is not null
+
+        var apiResponse = Assert.IsType<ApiResponse>(okResult.Value); // Assert that the response is of type ApiResponse
+        Assert.Equal("Product catalog updated successfully.", apiResponse.Message); // Check the Message property
+    }
 
     [Fact]
     public void GetCategories_ReturnsOkResult_WithCategories()
@@ -131,11 +134,3 @@ public class ProductsControllerTests
 }
 
 
-//public class ProductsControllerTests
-//{
-//    [Fact]
-//    public void Test1()
-//    {
-
-//    }
-//}
