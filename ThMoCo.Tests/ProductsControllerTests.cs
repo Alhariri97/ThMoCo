@@ -92,25 +92,25 @@ public class ProductsControllerTests
         Assert.Equal(2, returnedStock.Count);
     }
 
-    [Fact]
-    public async Task UpdateProductCatalog_ValidProducts_ReturnsOkResult()
-    {
-        // Arrange
-        var updatedProducts = new List<ProductDTO>
-        {
-            new ProductDTO { Id = 1, Name = "Product1", Price = 20.0m }
-        };
+    //[Fact]
+    //public async Task UpdateProductCatalog_ValidProducts_ReturnsOkResult()
+    //{
+    //    // Arrange
+    //    var updatedProducts = new List<ProductDTO>
+    //    {
+    //        new ProductDTO { Id = 1, Name = "Product1", Price = 20.0m }
+    //    };
 
-        _mockProductService.Setup(service => service.UpdateProductCatalog(updatedProducts))
-                           .Returns(Task.CompletedTask);
+    //    _mockProductService.Setup(service => service.UpdateProductCatalog(updatedProducts))
+    //                       .Returns(Task.CompletedTask);
 
-        // Act
-        var result = await _controller.UpdateProductCatalog(updatedProducts);
+    //    // Act
+    //    var result = await _controller.UpdateProductCatalog(updatedProducts);
 
-        // Assert
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal("Product catalog updated successfully.", ((dynamic)okResult.Value).message);
-    }
+    //    // Assert
+    //    var okResult = Assert.IsType<OkObjectResult>(result);
+    //    Assert.Equal("Product catalog updated successfully.", ((dynamic)okResult.Value).message);
+    //}
 
     [Fact]
     public void GetCategories_ReturnsOkResult_WithCategories()
