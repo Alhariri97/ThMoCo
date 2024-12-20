@@ -1,47 +1,71 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+using ThMoCo.Api.DTO;
 using ThMoCo.Api.IServices;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
-namespace ThMoCo.Api.Controllers;
-
-
-[ApiController]
-[Route("api/[controller]")]
-public class ProductsController : ControllerBase
+namespace ThMoCo.Api.Controllers
 {
-    private readonly IProductService _productService;
-    private readonly IConfiguration _configuration;
-
-    public ProductsController(IProductService productService, IConfiguration configuration)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ProductsController : ControllerBase
     {
-        _productService = productService;
-        _configuration = configuration;
+        private readonly IProductService _productService;
 
-    }
-
-    [HttpGet("connection-string")]
-    public IActionResult GetAny()
-    {
-        string connectionString = _configuration.GetValue<string>("ConnectionStrings:ConnectionString");
-        return Ok(new { ConnectionString = connectionString });
-    }
-
-
-    [HttpGet]
-    public IActionResult Get()
-    {
-        var products = _productService.GetProducts();
-        return Ok(products);
-    }
-
-    [HttpGet("{id}")]
-    public IActionResult Get(int id)
-    {
-        var product = _productService.GetProductById(id);
-        if (product == null)
+        public ProductsController(IProductService productService)
         {
-            return NotFound();
+            _productService = productService;
         }
-        return Ok(product);
+
+        // GET /api/products
+        [HttpGet]
+        public ActionResult<List<ProductDTO>> GetProducts(
+            [FromQuery] string? search,
+            [FromQuery] string? category,
+            [FromQuery] decimal? minPrice,
+            [FromQuery] decimal? maxPrice)
+        {
+            var products = _productService.GetProducts(search, category, minPrice, maxPrice);
+            return Ok(products);
+        }
+
+        // GET /api/products/{productId}
+        [HttpGet("{productId}")]
+        public ActionResult<ProductDTO> GetProductById(int productId)
+        {
+            var product = _productService.GetProductById(productId);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(product);
+        }
+
+        // GET /api/products/stock
+        [HttpGet("stock")]
+        public async Task<ActionResult<List<ProductDTO>>> GetStockStatus()
+        {
+            var stockStatus = await _productService.GetStockStatus();
+            return Ok(stockStatus);
+        }
+
+        // POST /api/products/update
+        [HttpPost("update")]
+        [Authorize(Roles = "Admin")] // Ensure this is accessible only to admin users
+        public async Task<IActionResult> UpdateProductCatalog([FromBody] List<ProductDTO> updatedProducts)
+        {
+            await _productService.UpdateProductCatalog(updatedProducts);
+            return Ok(new { message = "Product catalog updated successfully." });
+        }
+
+        // GET /api/products/categories
+        [HttpGet("categories")]
+        public ActionResult<List<string>> GetCategories()
+        {
+            var categories = _productService.GetProductCategories();
+            return Ok(categories);
+        }
     }
 }
