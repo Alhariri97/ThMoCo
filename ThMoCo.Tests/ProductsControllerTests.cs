@@ -1,0 +1,141 @@
+namespace ThMoCo.Tests;
+using Moq;
+using Xunit;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using ThMoCo.Api.Controllers;
+using ThMoCo.Api.DTO;
+using ThMoCo.Api.IServices;
+
+public class ProductsControllerTests
+{
+    private readonly Mock<IProductService> _mockProductService;
+    private readonly ProductsController _controller;
+
+    public ProductsControllerTests()
+    {
+        _mockProductService = new Mock<IProductService>();
+        _controller = new ProductsController(_mockProductService.Object);
+    }
+
+    [Fact]
+    public void GetProducts_ReturnsOkResult_WithListOfProducts()
+    {
+        // Arrange
+        var products = new List<ProductDTO>
+        {
+            new ProductDTO { Id = 1, Name = "Product1", Price = 10.0m },
+            new ProductDTO { Id = 2, Name = "Product2", Price = 15.0m }
+        };
+        _mockProductService.Setup(service => service.GetProducts(null, null, null, null))
+                           .Returns(products);
+
+        // Act
+        var result = _controller.GetProducts(null, null, null, null);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var returnedProducts = Assert.IsType<List<ProductDTO>>(okResult.Value);
+        Assert.Equal(2, returnedProducts.Count);
+    }
+
+    [Fact]
+    public void GetProductById_ProductExists_ReturnsOkResult()
+    {
+        // Arrange
+        var product = new ProductDTO { Id = 1, Name = "Product1", Price = 10.0m };
+        _mockProductService.Setup(service => service.GetProductById(1))
+                           .Returns(product);
+
+        // Act
+        var result = _controller.GetProductById(1);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var returnedProduct = Assert.IsType<ProductDTO>(okResult.Value);
+        Assert.Equal(1, returnedProduct.Id);
+    }
+
+    [Fact]
+    public void GetProductById_ProductDoesNotExist_ReturnsNotFound()
+    {
+        // Arrange
+        _mockProductService.Setup(service => service.GetProductById(1))
+                           .Returns((ProductDTO)null);
+
+        // Act
+        var result = _controller.GetProductById(1);
+
+        // Assert
+        Assert.IsType<NotFoundResult>(result.Result);
+    }
+
+    [Fact]
+    public async Task GetStockStatus_ReturnsOkResult_WithStockData()
+    {
+        // Arrange
+        var stockStatus = new List<ProductDTO>
+        {
+            new ProductDTO { Id = 1, Name = "Product1", IsAvailable = true },
+            new ProductDTO { Id = 2, Name = "Product2", IsAvailable = false }
+        };
+        _mockProductService.Setup(service => service.GetStockStatus())
+                           .ReturnsAsync(stockStatus);
+
+        // Act
+        var result = await _controller.GetStockStatus();
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var returnedStock = Assert.IsType<List<ProductDTO>>(okResult.Value);
+        Assert.Equal(2, returnedStock.Count);
+    }
+
+    [Fact]
+    public async Task UpdateProductCatalog_ValidProducts_ReturnsOkResult()
+    {
+        // Arrange
+        var updatedProducts = new List<ProductDTO>
+        {
+            new ProductDTO { Id = 1, Name = "Product1", Price = 20.0m }
+        };
+
+        _mockProductService.Setup(service => service.UpdateProductCatalog(updatedProducts))
+                           .Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _controller.UpdateProductCatalog(updatedProducts);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal("Product catalog updated successfully.", ((dynamic)okResult.Value).message);
+    }
+
+    [Fact]
+    public void GetCategories_ReturnsOkResult_WithCategories()
+    {
+        // Arrange
+        var categories = new List<string> { "Electronics", "Clothing" };
+        _mockProductService.Setup(service => service.GetProductCategories())
+                           .Returns(categories);
+
+        // Act
+        var result = _controller.GetCategories();
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var returnedCategories = Assert.IsType<List<string>>(okResult.Value);
+        Assert.Equal(2, returnedCategories.Count);
+    }
+}
+
+
+//public class ProductsControllerTests
+//{
+//    [Fact]
+//    public void Test1()
+//    {
+
+//    }
+//}
