@@ -57,7 +57,12 @@ namespace ThMoCo.Api.Controllers
         public async Task<IActionResult> UpdateProductCatalog([FromBody] List<ProductDTO> updatedProducts)
         {
             await _productService.UpdateProductCatalog(updatedProducts);
-            return Ok(new { message = "Product catalog updated successfully." });
+
+            var response = new ApiResponse
+            {
+                Message = "Product catalog updated successfully."
+            };
+            return Ok(response);
         }
 
         // GET /api/products/categories
