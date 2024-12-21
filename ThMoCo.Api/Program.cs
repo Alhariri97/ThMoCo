@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using ThMoCo.Api.Data;
 using ThMoCo.Api.IServices;
 using ThMoCo.Api.Services;
@@ -10,10 +12,46 @@ builder.Services.AddControllers();
 
 // Add Swagger for API documentation in development
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter 'Bearer' [space] and your token.",
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
+
+
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = $"https://{builder.Configuration["Auth0:Domain"]}/";
+        options.Audience = builder.Configuration["Auth0:Audience"];
+    });
+
+builder.Services.AddAuthorization();
+
 
 // Configure services based on environment
-
 if (builder.Environment.IsDevelopment())
 {
     Console.WriteLine("Registering LocalProductService as IProductService");
@@ -58,9 +96,12 @@ if (app.Environment.IsDevelopment() || builder.Configuration.GetValue<bool>("Ena
     });
 }
 
-app.UseHttpsRedirection(); 
+app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
+
 
 app.MapControllers();
 
