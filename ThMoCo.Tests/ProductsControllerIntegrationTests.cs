@@ -7,14 +7,52 @@ using ThMoCo.Api.DTO;
 namespace ThMoCo.Tests.Intergration;
 
 
-public class ProductsControllerIntegrationTestsWithoutAuth: IClassFixture<CustomWebApplicationFactory<ThMoCo.Api.Program>>
+public class ProductsControllerIntegrationTests : IClassFixture<CustomWebApplicationFactory<ThMoCo.Api.Program>>
 {
     private readonly HttpClient _clientWithoutAuth;
-    public ProductsControllerIntegrationTestsWithoutAuth(CustomWebApplicationFactory<ThMoCo.Api.Program> factory)
+    public ProductsControllerIntegrationTests(CustomWebApplicationFactory<ThMoCo.Api.Program> factory)
     {
         _clientWithoutAuth = factory.CreateClient();
 
     }
+    [Fact]
+    public async Task GetProductById_ValidId_ReturnsProduct()
+    {
+        // Act
+        var response = await _clientWithoutAuth.GetAsync("/api/products/1");
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        var product = await response.Content.ReadFromJsonAsync<ProductDTO>();
+        Assert.NotNull(product);
+        Assert.Equal(1, product.Id);
+    }
+
+    [Fact]
+    public async Task GetProductById_InvalidId_ReturnsNotFound()
+    {
+        // Act
+        var response = await _clientWithoutAuth.GetAsync("/api/products/999");
+
+        // Assert
+        Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetProducts_ReturnsProductsList()
+    {
+        // Act
+        var response = await _clientWithoutAuth.GetAsync("/api/products");
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        var products = await response.Content.ReadFromJsonAsync<List<ProductDTO>>();
+        Assert.NotNull(products);
+        Assert.NotEmpty(products);
+    }
+
+
+
     [Fact]
     public async Task GetCategories_Unauthorized_ReturnsUnauthorized()
     {
@@ -42,52 +80,18 @@ public class ProductsControllerIntegrationTestsWithoutAuth: IClassFixture<Custom
         Assert.Equal(System.Net.HttpStatusCode.Unauthorized, response.StatusCode);
     }
 }
-public class ProductsControllerIntegrationTests : IClassFixture<CustomWebApplicationFactory<ThMoCo.Api.Program>>
+
+public class ProductsControllerIntegrationTestsWithUserRole : IClassFixture<CustomWebApplicationFactory<ThMoCo.Api.Program>>
 {
+
     private readonly HttpClient _client;
 
-    public ProductsControllerIntegrationTests(CustomWebApplicationFactory<ThMoCo.Api.Program> factory)
+    public ProductsControllerIntegrationTestsWithUserRole(CustomWebApplicationFactory<ThMoCo.Api.Program> factory)
     {
         _client = factory.CreateClient();
         _client.DefaultRequestHeaders.Authorization =
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "User"); // Matches TestAuthHandler logic
 
-    }
-
-    [Fact]
-    public async Task GetProducts_ReturnsProductsList()
-    {
-        // Act
-        var response = await _client.GetAsync("/api/products");
-
-        // Assert
-        response.EnsureSuccessStatusCode();
-        var products = await response.Content.ReadFromJsonAsync<List<ProductDTO>>();
-        Assert.NotNull(products);
-        Assert.NotEmpty(products);
-    }
-
-    [Fact]
-    public async Task GetProductById_ValidId_ReturnsProduct()
-    {
-        // Act
-        var response = await _client.GetAsync("/api/products/1");
-
-        // Assert
-        response.EnsureSuccessStatusCode();
-        var product = await response.Content.ReadFromJsonAsync<ProductDTO>();
-        Assert.NotNull(product);
-        Assert.Equal(1, product.Id);
-    }
-
-    [Fact]
-    public async Task GetProductById_InvalidId_ReturnsNotFound()
-    {
-        // Act
-        var response = await _client.GetAsync("/api/products/999");
-
-        // Assert
-        Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
     }
 
 
@@ -119,18 +123,17 @@ public class ProductsControllerIntegrationTests : IClassFixture<CustomWebApplica
         // Assert
         Assert.Equal(System.Net.HttpStatusCode.Forbidden, response.StatusCode);
     }
-
 }
-public class ProductsControllerIntegrationTestsWithAdminAuth : IClassFixture<CustomWebApplicationFactory<ThMoCo.Api.Program>>
+
+public class ProductsControllerIntegrationTestsWithAdminRole : IClassFixture<CustomWebApplicationFactory<ThMoCo.Api.Program>>
 {
     private readonly HttpClient _client;
 
-    public ProductsControllerIntegrationTestsWithAdminAuth(CustomWebApplicationFactory<ThMoCo.Api.Program> factory)
+    public ProductsControllerIntegrationTestsWithAdminRole(CustomWebApplicationFactory<ThMoCo.Api.Program> factory)
     {
         _client = factory.CreateClient();
         _client.DefaultRequestHeaders.Authorization =
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "admin-token"); // Matches TestAuthHandler logic
-
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "admin-token");
     }
 
 
