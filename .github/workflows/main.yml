@@ -8,40 +8,41 @@ on:
       - main
   workflow_dispatch: # Allow manual triggering of the workflow from GitHub UI
 
-# Define environment variables that will be used across jobs
 env:
   DOTNET_VERSION: 8.0.x
   BUILD_CONFIGURATION: Release
+
   PROJECT_PATH: ./ThMoCo.Api
   PUBLISH_PATH: ./myapp
-  TESTRESULTS_PATH: ./ThMoCo.Tests
   AZURE_WEBAPP_NAME: thamcodevah-app
+
+  FRONTEND_PROJECT_PATH: ./ThMoCo.App
+  FRONTEND_PUBLISH_PATH: ./myfrontendapp
+  AZURE_FRONTEND_WEBAPP_NAME: thamcodevah-frontend-app
+
+  TESTRESULTS_PATH: ./ThMoCo.Tests
   AZURE_RG_Name: thamco-devah-rg
 
 jobs:
-    # Job to build the .NET application
-  build:
-    runs-on: ubuntu-22.04
-    steps:
-        # Step 1: Checkout the repository code
-      - uses: actions/checkout@v3
-        # Step 2: Install .NET SDK
 
+
+
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
       - name: Install dotnet
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
-        # Step 3: Restore dependencies
       - name: Install dependencies
         run: dotnet restore
-        # Step 4: Build the project
       - name: Build code
         run: |
           dotnet build \
             --configuration $BUILD_CONFIGURATION \
             --no-restore
-    
-        # Step 5: Run unit tests
       - name: Run unit tests
         run: |
           dotnet test \
@@ -50,14 +51,11 @@ jobs:
             --logger trx \
             --results-directory $TESTRESULTS_PATH
       - name: Store test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-
-          # Step 6: Upload test results as artifacts
           name: test-results
           path: ${{ env.TESTRESULTS_PATH }}
-        if: ${{ always() }}
-          # Step 7: Package the build output
+        if: ${{ always() }} # ensures test results uploaded even after failure
       - name: Package build
         run: |
           dotnet publish $PROJECT_PATH \
@@ -70,44 +68,56 @@ jobs:
         run: ls -R ${{ env.PUBLISH_PATH }}
   
        # Step 9: Upload build output as artifacts for deployment
-      - name: Store build artefact
+      - name: Store backend build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: build
+          name: backend-build
           path: ${{ env.PUBLISH_PATH }}
 
-
+          # Step 10: Package the build output frontend project
+      - name: Package build
+        run: |
+          dotnet publish $FRONTEND_PROJECT_PATH \
+            --configuration $BUILD_CONFIGURATION \
+            --no-build \
+            --output $FRONTEND_PUBLISH_PATH
+      
+        # Step 11: Debugging - List the contents of the publish folder frontend project
+      - name: Debug artifact path
+        run: ls -R ${{ env.FRONTEND_PUBLISH_PATH }}
+  
+       # Step 12: Upload build output as artifacts for deployment frontend project
+      - name: Store frontend build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: ${{ env.FRONTEND_PUBLISH_PATH }}
+          
   # Job to deploy the application to Azure Web App
   deploy-to-azure:
     runs-on: ubuntu-22.04
     needs: build # Ensure the build job runs before this one
     steps:
-          # Step 1: Login to Azure using the Service Principal credentials
       - uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      #   # Step 2: (Optional) Run an Azure CLI script to verify the account
-      # - name: Azure CLI script
-      #   uses: azure/cli@v2
-      #   with:
-      #     azcliversion: latest
-      #     inlineScript: |
-      #       az account show
-
-          # Step 3: Download the build artifact from the previous job
-      - uses: actions/download-artifact@v4 
+      - name: Azure CLI scrip
+        uses: azure/cli@v2
         with:
-          name: build
+          azcliversion: latest
+          inlineScript: |
+            az account show
+            
+      - uses: actions/download-artifact@v3
+        with:
+          name: backend-build
           path: ${{ env.PUBLISH_PATH }}
-
-          # Step 4: Deploy the web app to Azure Web App
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
-        with:
+        with: 
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE  }} # Define secret in GitHub with contents of Publish Profile
           package: ${{ env.PUBLISH_PATH }}
 
           # Step 5: Set environment variables in the Azure Web App
@@ -119,4 +129,32 @@ jobs:
               --settings \
                 "ConnectionStrings:ConnectionString= ${{secrets.DB_CONNECTION_STRING}}" \
                 "EnableSwaggerInProduction=true"
+
+
+
+        # Step 6: Download the build artifact from the previous job frontend project
+      - uses: actions/download-artifact@v4 
+        with:
+          name: frontend-build
+          path: ${{ env.FRONTEND_PUBLISH_PATH }}
+
+          # Step 7: Deploy the web app to Azure Web App frontend project
+      - name: Deploy to Azure Web App
+        id: deploy-to-frontend-app
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_FRONTEND_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE__FRONTEND_WEBAPP_PUBLISH_PROFILE }}
+          package: ${{ env.FRONTEND_PUBLISH_PATH }}
+
+          # Step 8: Set environment variables in the Azure Web App frontend project
+      - name: Set Environment Variables
+        run: |
+          az webapp config appsettings set \
+              --name ${{ env.AZURE_FRONTEND_WEBAPP_NAME }} \
+              --resource-group ${{env.AZURE_RG_Name}} \
+              --settings \
+                "ConnectionStrings:ConnectionString= ${{secrets.DB_CONNECTION_STRING}}" \
+                "EnableSwaggerInProduction=true"
+
 ###################################################
