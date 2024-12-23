@@ -244,13 +244,13 @@ jobs:
       - name: Set backend environment variables
         run: |
           az webapp config appsettings set \
-              --name ${{ env.AZURE_WEBAPP_NAME }} \
-              --resource-group ${{ env.AZURE_RG_Name }} \
-              --settings \
-                "ConnectionStrings:ConnectionString=${{ secrets.DB_CONNECTION_STRING }}" \
-                "EnableSwaggerInProduction=true"
-                "Auth:Domain=${{ secrets.AUTH0_DOMAIN }}" \
-                "Auth:Identifier=${{ secrets.AUTH0_IDENTIFIER }}"
+            --name ${{ env.AZURE_WEBAPP_NAME }} \
+            --resource-group ${{ env.AZURE_RG_Name }} \
+            --settings \
+              "ConnectionStrings:ConnectionString=${{ secrets.DB_CONNECTION_STRING }}" \
+              "EnableSwaggerInProduction=true" \
+              "Auth0:Domain=${{ secrets.AUTH0_DOMAIN }}" \
+              "Auth0:Identifier=${{ secrets.AUTH0_IDENTIFIER }}"
 
       - name: Download frontend build artifact for deployment
         uses: actions/download-artifact@v4
@@ -269,5 +269,5 @@ jobs:
               --name ${{ env.AZURE_FRONTEND_WEBAPP_NAME }} \
               --resource-group ${{ env.AZURE_RG_Name }} \
               --settings \
-                "Auth:Domain=${{ secrets.AUTH0_DOMAIN }}" \
-                "Auth:Identifier=${{ secrets.AUTH0_IDENTIFIER }}"
+                "Auth0:Domain=${{ secrets.AUTH0_DOMAIN }}" \
+                "Auth0:Identifier=${{ secrets.AUTH0_IDENTIFIER }}"
