@@ -1,7 +1,18 @@
+using Auth0.AspNetCore.Authentication;
+using ThMoCo.App.Controllers;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpClient<HomeController>();
+
+// Configure Auth0 authentication.
+builder.Services.AddAuth0WebAppAuthentication(options =>
+{
+    options.Domain = builder.Configuration["Auth0:Domain"];
+    options.ClientId = builder.Configuration["Auth0:ClientId"];
+});
 
 var app = builder.Build();
 
@@ -18,6 +29,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication(); // Ensure authentication middleware is added
 app.UseAuthorization();
 
 app.MapControllerRoute(

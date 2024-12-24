@@ -5,9 +5,9 @@ VisualStudioVersion = 17.11.35208.52
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThMoCo.Api", "ThMoCo.Api\ThMoCo.Api.csproj", "{B1AC319A-EAD6-4679-BDEC-A64554D2D175}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThMoCo.Tests", "ThMoCo.Tests\ThMoCo.Tests.csproj", "{D925085C-E347-43F1-AA16-46B9D68C7D8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThMoCo.Tests", "ThMoCo.Tests\ThMoCo.Tests.csproj", "{D925085C-E347-43F1-AA16-46B9D68C7D8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThMoCo.App", "ThMoCo.App\ThMoCo.App.csproj", "{41C70170-18A8-4ACD-9735-3663A14B9D1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThMoCo.App", "ThMoCo.App\ThMoCo.App.csproj", "{41C70170-18A8-4ACD-9735-3663A14B9D1A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
