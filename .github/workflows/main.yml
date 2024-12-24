@@ -1,167 +1,3 @@
-# # Workflow name displayed in GitHub Actions
-# name: build-and-deploy-web-app
-
-# # Trigger the workflow on push to the 'main' branch
-# on:
-#   push:
-#     branches:
-#       - main
-#   workflow_dispatch: # Allow manual triggering of the workflow from GitHub UI
-
-# env:
-#   DOTNET_VERSION: 8.0.x
-#   BUILD_CONFIGURATION: Release
-
-#   PROJECT_PATH: ./ThMoCo.Api
-#   PUBLISH_PATH: ./myapp
-#   AZURE_WEBAPP_NAME: thamcodevah-app
-
-#   FRONTEND_PROJECT_PATH: ./ThMoCo.App
-#   FRONTEND_PUBLISH_PATH: ./myfrontendapp
-#   AZURE_FRONTEND_WEBAPP_NAME: thamcodevah-frontend-app
-
-#   TESTRESULTS_PATH: ./ThMoCo.Tests
-#   AZURE_RG_Name: thamco-devah-rg
-
-# jobs:
-
-
-
-
-#   build:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v3
-#       - name: Install dotnet
-#         uses: actions/setup-dotnet@v3
-#         with:
-#           dotnet-version: ${{ env.DOTNET_VERSION }}
-#       - name: Install dependencies
-#         run: dotnet restore
-#       - name: Build code
-#         run: |
-#           dotnet build \
-#             --configuration $BUILD_CONFIGURATION \
-#             --no-restore
-#       - name: Run unit tests
-#         run: |
-#           dotnet test \
-#             --configuration $BUILD_CONFIGURATION \
-#             --no-build \
-#             --logger trx \
-#             --results-directory $TESTRESULTS_PATH
-#       - name: Store test results
-#         uses: actions/upload-artifact@v4
-#         with:
-#           name: test-results
-#           path: ${{ env.TESTRESULTS_PATH }}
-#         if: ${{ always() }} # ensures test results uploaded even after failure
-#       - name: Package build
-#         run: |
-#           dotnet publish $PROJECT_PATH \
-#             --configuration $BUILD_CONFIGURATION \
-#             --no-build \
-#             --output $PUBLISH_PATH
-      
-#         # Step 8: Debugging - List the contents of the publish folder
-#       - name: Debug artifact path
-#         run: ls -R ${{ env.PUBLISH_PATH }}
-  
-#        # Step 9: Upload build output as artifacts for deployment
-#       - name: Store backend build artifact
-#         uses: actions/upload-artifact@v4
-#         with:
-#           name: backend-build
-#           path: ${{ env.PUBLISH_PATH }}
-
-#           # Step 10: Package the build output frontend project
-#       - name: Package build
-#         run: |
-#           dotnet publish $FRONTEND_PROJECT_PATH \
-#             --configuration $BUILD_CONFIGURATION \
-#             --no-build \
-#             --output $FRONTEND_PUBLISH_PATH
-      
-#         # Step 11: Debugging - List the contents of the publish folder frontend project
-#       - name: Debug artifact path
-#         run: ls -R ${{ env.FRONTEND_PUBLISH_PATH }}
-  
-#        # Step 12: Upload build output as artifacts for deployment frontend project
-#       - name: Store frontend build artifact
-#         uses: actions/upload-artifact@v4
-#         with:
-#           name: frontend-build
-#           path: ${{ env.FRONTEND_PUBLISH_PATH }}
-          
-#   # Job to deploy the application to Azure Web App
-#   deploy-to-azure:
-#     runs-on: ubuntu-22.04
-#     needs: build # Ensure the build job runs before this one
-#     steps:
-#       - uses: azure/login@v2
-#         with:
-#           creds: ${{ secrets.AZURE_CREDENTIALS }}
-#       - name: Azure CLI scrip
-#         uses: azure/cli@v2
-#         with:
-#           azcliversion: latest
-#           inlineScript: |
-#             az account show
-            
-#       - name: Store backend build artifact
-#         uses: actions/download-artifact@v4
-#         with:
-#           name: backend-build
-#           path: ${{ env.PUBLISH_PATH }}
-#       - name: Deploy to Azure Web App
-#         id: deploy-to-webapp
-#         uses: azure/webapps-deploy@v2
-#         with: 
-#           app-name: ${{ env.AZURE_WEBAPP_NAME }}
-#           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE  }} # Define secret in GitHub with contents of Publish Profile
-#           package: ${{ env.PUBLISH_PATH }}
-
-#           # Step 5: Set environment variables in the Azure Web App
-#       - name: Set Environment Variables
-#         run: |
-#           az webapp config appsettings set \
-#               --name ${{ env.AZURE_WEBAPP_NAME }} \
-#               --resource-group ${{env.AZURE_RG_Name}} \
-#               --settings \
-#                 "ConnectionStrings:ConnectionString= ${{secrets.DB_CONNECTION_STRING}}" \
-#                 "EnableSwaggerInProduction=true"
-
-
-
-#         # Step 6: Download the build artifact from the previous job frontend project
-#       - name: Store frontend build artifact
-#         uses: actions/download-artifact@v4 
-#         with:
-#           name: frontend-build
-#           path: ${{ env.FRONTEND_PUBLISH_PATH }}
-
-#           # Step 7: Deploy the web app to Azure Web App frontend project
-#       - name: Deploy to Azure Web App
-#         id: deploy-to-frontend-app
-#         uses: azure/webapps-deploy@v2
-#         with:
-#           app-name: ${{ env.AZURE_FRONTEND_WEBAPP_NAME }}
-#           publish-profile: ${{ secrets.AZURE__FRONTEND_WEBAPP_PUBLISH_PROFILE }}
-#           package: ${{ env.FRONTEND_PUBLISH_PATH }}
-
-#           # Step 8: Set environment variables in the Azure Web App frontend project
-#       - name: Set Environment Variables
-#         run: |
-#           az webapp config appsettings set \
-#               --name ${{ env.AZURE_FRONTEND_WEBAPP_NAME }} \
-#               --resource-group ${{env.AZURE_RG_Name}} \
-#               --settings \
-#                 "ConnectionStrings:ConnectionString= ${{secrets.DB_CONNECTION_STRING}}" \
-#                 "EnableSwaggerInProduction=true"
-
-# ###################################################
-
-
 name: build-and-deploy-web-app
 
 on:
@@ -175,14 +11,14 @@ env:
   BUILD_CONFIGURATION: Release
 
   PROJECT_PATH: ./ThMoCo.Api
-  PUBLISH_PATH: ./myapp
+  PUBLISH_PATH: ./publish/backend
   AZURE_WEBAPP_NAME: thamcodevah-app
 
   FRONTEND_PROJECT_PATH: ./ThMoCo.App
-  FRONTEND_PUBLISH_PATH: ./myfrontendapp
+  FRONTEND_PUBLISH_PATH: ./publish/frontend
   AZURE_FRONTEND_WEBAPP_NAME: thamcodevah-frontend-app
 
-  TESTRESULTS_PATH: ./ThMoCo.Tests
+  TESTRESULTS_PATH: ./test-results
   AZURE_RG_Name: thamco-devah-rg
 
 jobs:
@@ -190,31 +26,43 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - name: Install .NET SDK
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
+
       - name: Restore dependencies
         run: dotnet restore
+
       - name: Build projects
         run: dotnet build --configuration $BUILD_CONFIGURATION --no-restore
+
       - name: Run unit tests
-        run: dotnet test --configuration $BUILD_CONFIGURATION --no-build --logger trx --results-directory $TESTRESULTS_PATH
+        run: |
+          dotnet test --configuration $BUILD_CONFIGURATION --no-build --logger trx --results-directory "$TESTRESULTS_PATH"
+
       - name: Upload test results
         uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: ${{ env.TESTRESULTS_PATH }}
         if: ${{ always() }}
+
       - name: Publish backend
-        run: dotnet publish $PROJECT_PATH --configuration $BUILD_CONFIGURATION --no-build --output $PUBLISH_PATH
+        run: |
+          dotnet publish "$PROJECT_PATH" --configuration $BUILD_CONFIGURATION --no-build --output "$PUBLISH_PATH"
+
       - name: Upload backend artifact
         uses: actions/upload-artifact@v4
         with:
           name: backend-build
           path: ${{ env.PUBLISH_PATH }}
+
       - name: Publish frontend
-        run: dotnet publish $FRONTEND_PROJECT_PATH --configuration $BUILD_CONFIGURATION --no-build --output $FRONTEND_PUBLISH_PATH
+        run: |
+          dotnet publish "$FRONTEND_PROJECT_PATH" --configuration $BUILD_CONFIGURATION --no-build --output "$FRONTEND_PUBLISH_PATH"
+
       - name: Upload frontend artifact
         uses: actions/upload-artifact@v4
         with:
@@ -228,19 +76,23 @@ jobs:
       - uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+
       - name: Verify Azure Account
         run: az account show
+
       - name: Download backend build artifact for deployment
         uses: actions/download-artifact@v4
         with:
           name: backend-build
           path: ${{ env.PUBLISH_PATH }}
+
       - name: Deploy backend to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: ${{ env.PUBLISH_PATH }}
+
       - name: Set backend environment variables
         run: |
           az webapp config appsettings set \
@@ -257,19 +109,20 @@ jobs:
         with:
           name: frontend-build
           path: ${{ env.FRONTEND_PUBLISH_PATH }}
+
       - name: Deploy frontend to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_FRONTEND_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_FRONTEND_WEBAPP_PUBLISH_PROFILE }}
           package: ${{ env.FRONTEND_PUBLISH_PATH }}
+
       - name: Set frontend environment variables
         run: |
           az webapp config appsettings set \
-              --name ${{ env.AZURE_FRONTEND_WEBAPP_NAME }} \
-              --resource-group ${{ env.AZURE_RG_Name }} \
-              --settings \
-                "ApiSettings:BaseUrl=https://thamcodevah-app.azurewebsites.net/" \
-                "Auth0:Domain=${{ secrets.AUTH_DOMAIN }}" \
-                "Auth0:ClientId=${{ secrets.AUTH_CLIENT_ID }}" 
-
+            --name ${{ env.AZURE_FRONTEND_WEBAPP_NAME }} \
+            --resource-group ${{ env.AZURE_RG_Name }} \
+            --settings \
+              "ApiSettings:BaseUrl=https://thamcodevah-app.azurewebsites.net/" \
+              "Auth0:Domain=${{ secrets.AUTH_DOMAIN }}" \
+              "Auth0:ClientId=${{ secrets.AUTH_CLIENT_ID }}"
