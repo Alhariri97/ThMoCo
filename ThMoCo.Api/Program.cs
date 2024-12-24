@@ -44,8 +44,8 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.Authority = builder.Configuration["Auth0:Domain"];
-        options.Audience = builder.Configuration["Auth0:Identifier"];
+        options.Authority = $"https://{builder.Configuration["Auth0:Domain"]}/";
+        options.Audience = builder.Configuration["Auth0:Audience"];
     });
 
 builder.Services.AddAuthorization();
