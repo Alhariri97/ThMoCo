@@ -269,5 +269,7 @@ jobs:
               --name ${{ env.AZURE_FRONTEND_WEBAPP_NAME }} \
               --resource-group ${{ env.AZURE_RG_Name }} \
               --settings \
-                "Auth0:Domain=${{ secrets.AUTH0_DOMAIN }}" \
-                "Auth0:Identifier=${{ secrets.AUTH0_IDENTIFIER }}"
+                "ApiSettings:BaseUrl=https://thamcodevah-app.azurewebsites.net/" \
+                "Auth0:Domain=${{ secrets.AUTH_DOMAIN }}" \
+                "Auth0:ClientId=${{ secrets.AUTH_CLIENT_ID }}" 
+
