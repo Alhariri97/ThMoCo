@@ -249,6 +249,7 @@ jobs:
               --settings \
                 "ConnectionStrings:ConnectionString=${{ secrets.DB_CONNECTION_STRING }}" \
                 "EnableSwaggerInProduction=true"
+                
       - name: Download frontend build artifact for deployment
         uses: actions/download-artifact@v4
         with:
@@ -266,4 +267,7 @@ jobs:
               --name ${{ env.AZURE_FRONTEND_WEBAPP_NAME }} \
               --resource-group ${{ env.AZURE_RG_Name }} \
               --settings \
-                "EnableSwaggerInProduction=true"
+                "ApiSettings:BaseUrl=https://thamcodevah-app.azurewebsites.net/" \
+                "Auth0:Domain=${{ secrets.AUTH_DOMAIN }}" \
+                "Auth0:ClientId=${{ secrets.AUTH_CLIENT_ID }}" 
+
