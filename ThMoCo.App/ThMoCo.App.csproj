@@ -13,5 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ThMoCo.Api\ThMoCo.Api.csproj" />
   </ItemGroup>
-
+	<ItemGroup Condition="'$(Configuration)' == 'Release'">
+		<None Remove="appsettings.Development.json" />
+	</ItemGroup>
 </Project>
