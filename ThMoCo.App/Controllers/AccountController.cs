@@ -12,18 +12,15 @@ namespace ThMoCo.App.Controllers;
 public class AccountController : Controller
 {
     [HttpGet("login")]
-    public async Task Login(string returnUrl = "https://localhost:7084")
+    public async Task Login(string returnUrl = "/")
     {
         var authenticationProperties = new LoginAuthenticationPropertiesBuilder()
-          // Indicate here where Auth0 should redirect the user after a login.
-          // Note that the resulting absolute Uri must be added to the
-          // **Allowed Callback URLs** settings for the app.
-          .WithRedirectUri(returnUrl)
-          .Build();
+            .WithRedirectUri("https://localhost:7084/callback") // Full URL matches Auth0 Allowed Callback URLs
+            .Build();
 
         await HttpContext.ChallengeAsync(
-          Auth0Constants.AuthenticationScheme,
-          authenticationProperties
+            Auth0Constants.AuthenticationScheme,
+            authenticationProperties
         );
     }
 
