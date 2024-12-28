@@ -19,7 +19,5 @@
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.3.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
-	<ItemGroup Condition="'$(Configuration)' == 'Release'">
-		<None Remove="appsettings.Development.json" />
-	</ItemGroup>
+
 </Project>
