@@ -2,6 +2,8 @@
 
 namespace ThMoCo.Api.DTO;
 
+// todo: make the isAvalible calculated from the quantity dynamicly.
+
 public class ProductDTO
 {
     public int Id { get; set; }
@@ -16,7 +18,7 @@ public class ProductDTO
     public decimal Price { get; set; }
 
     [JsonPropertyName("supplier")]
-    public string Supplier { get; set; } 
+    public string? Supplier{ get; set; } 
 
     [JsonPropertyName("stockQuantity")]
     public int StockQuantity { get; set; }
@@ -28,7 +30,7 @@ public class ProductDTO
     public string Category { get; set; }
 
     [JsonPropertyName("imageUrl")]
-    public string ImageUrl { get; set; }
+    public string? ImageUrl { get; set; }
 
     [JsonPropertyName("createdDate")]
     public DateTime CreatedDate { get; set; }
