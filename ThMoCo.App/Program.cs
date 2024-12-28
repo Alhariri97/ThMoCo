@@ -12,11 +12,12 @@ builder.Services.AddAuth0WebAppAuthentication(options =>
 {
     options.Domain = builder.Configuration["Auth0:Domain"];
     options.ClientId = builder.Configuration["Auth0:ClientId"];
+    options.CallbackPath = new PathString("/callback"); // Ensure this matches the Auth0 Allowed Callback URLs
 });
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline.         options.Authority = $"https://{builder.Configuration["Auth0:Domain"]}/";
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -29,8 +30,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication(); // Ensure authentication middleware is added
-app.UseAuthorization();
+app.UseAuthentication(); // Add Authentication Middleware
+app.UseAuthorization();  // Add Authorization Middleware
 
 app.MapControllerRoute(
     name: "default",
