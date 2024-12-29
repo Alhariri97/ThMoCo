@@ -1,7 +1,12 @@
 using Auth0.AspNetCore.Authentication;
+using ThMoCo.WebApp.IServices;
+using ThMoCo.WebApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddHttpClient<IProductService, ProductService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Values:BaseAddress"]);
+});
 
 // Cookie configuration for HTTPS
 //  builder.Services.Configure<CookiePolicyOptions>(options =>
