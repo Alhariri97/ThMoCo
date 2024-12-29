@@ -67,6 +67,7 @@ public class ProductsController : ControllerBase
     }
     // GET /api/products/categories
     [HttpGet("categories")]
+    [Authorize]
     public ActionResult<List<string>> GetCategories()
     {
         var categories = _productService.GetProductCategories();
