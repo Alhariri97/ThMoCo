@@ -10,8 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 //  });
 builder.Services.AddAuth0WebAppAuthentication(options =>
 {
-    options.Domain = "dev-wg8ow1pequtk5eia.uk.auth0.com";
-    options.ClientId = "5gbJNYfyURNS9ZiyxeV48PgTgieI6M50";
+    //options.Domain = "dev-wg8ow1pequtk5eia.uk.auth0.com";
+    //options.ClientId = "5gbJNYfyURNS9ZiyxeV48PgTgieI6M50";
+    options.Domain = builder.Configuration["Auth0:Domain"];
+    options.ClientId = builder.Configuration["Auth0:ClientId"];
+
 });
 builder.Services.AddControllersWithViews();
 var app = builder.Build();
