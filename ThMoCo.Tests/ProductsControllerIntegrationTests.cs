@@ -61,7 +61,12 @@ public class ProductsControllerIntegrationTests : IClassFixture<CustomWebApplica
         var response = await _clientWithoutAuth.GetAsync("/api/products/categories");
 
         // Assert
-        Assert.Equal(System.Net.HttpStatusCode.Unauthorized, response.StatusCode);
+        response.EnsureSuccessStatusCode();
+        var cats = await response.Content.ReadFromJsonAsync<List<string>>();
+        Assert.NotNull(cats);
+        Assert.NotEmpty(cats);
+
+        //Assert.Equal(System.Net.HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     [Fact]
