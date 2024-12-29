@@ -14,7 +14,7 @@ env:
   PUBLISH_PATH: ./publish/backend
   AZURE_WEBAPP_NAME: thamcodevah-app
 
-  FRONTEND_PROJECT_PATH: ./ThMoCo.App
+  FRONTEND_PROJECT_PATH: ./ThMoCo.WebApp
   FRONTEND_PUBLISH_PATH: ./publish/frontend
   AZURE_FRONTEND_WEBAPP_NAME: thamcodevah-frontend-app
 
