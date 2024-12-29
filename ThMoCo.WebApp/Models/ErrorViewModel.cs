@@ -1,4 +1,4 @@
-namespace ThMoCo.App.Models
+namespace ThMoCo.WebApp.Models
 {
     public class ErrorViewModel
     {

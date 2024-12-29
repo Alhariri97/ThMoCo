@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using ThMoCo.App.Models;
+using ThMoCo.WebApp.Models;
 
-namespace ThMoCo.App.Controllers
+namespace ThMoCo.WebApp.Controllers
 {
     public class HomeController : Controller
     {
