@@ -26,7 +26,6 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
 
-                        @* If the user is authenticated, show the Profile and Logout links *@
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
@@ -38,7 +37,6 @@
                         }
                         else
                         {
-                            @* Otherwise, just show the Login link *@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
                             </li>
