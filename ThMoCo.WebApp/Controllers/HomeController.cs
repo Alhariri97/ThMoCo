@@ -11,12 +11,15 @@ public class HomeController : Controller
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IProductService _productService;
+    private readonly string _baseAddress;
 
     public HomeController(IHttpClientFactory httpClientFactory,
-        IProductService productService)
+        IProductService productService, IConfiguration configuration)
     {
         _httpClientFactory = httpClientFactory;
         _productService = productService;
+        _baseAddress = configuration["Values:BaseAddress"];
+
     }
 
     public async Task<IActionResult> Index(string search, string category, decimal? minPrice, decimal? maxPrice)
@@ -54,7 +57,7 @@ public class HomeController : Controller
         var client = _httpClientFactory.CreateClient();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-        var response = await client.GetAsync("https://localhost:7280/protected");
+        var response = await client.GetAsync($"{_baseAddress}protected");
 
         if (!response.IsSuccessStatusCode)
         {
@@ -78,7 +81,7 @@ public class HomeController : Controller
         var client = _httpClientFactory.CreateClient();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-        var response = await client.GetAsync("https://localhost:7280/api/Admin/secret");
+        var response = await client.GetAsync($"{_baseAddress}api/Admin/secret");
 
         if (!response.IsSuccessStatusCode)
         {
