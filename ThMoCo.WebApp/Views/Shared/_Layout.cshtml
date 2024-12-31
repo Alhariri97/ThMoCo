@@ -38,7 +38,7 @@
                             @if (User.Claims.Any(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role" && c.Value == "admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Dashboard">Admin Dashboard</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Admin Dashboard</a>
                                 </li>
                             }
                         }
