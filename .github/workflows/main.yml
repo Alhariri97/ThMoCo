@@ -124,7 +124,7 @@ jobs:
             --resource-group ${{ env.AZURE_RG_Name }} \
             --settings \
               "ApiSettings:BaseUrl=https://thamcodevah-app.azurewebsites.net/" \
-              "Auth0:Domain=${{ secrets.AUTH_DOMAIN }}" \
+              "Auth0:Domain=${{ secrets.AUTH0_DOMAIN }}" \
               "Auth0:Authority=${{ secrets.AUTH_AUTHORITY }}" \
               "Auth0:ClientSecret=${{ secrets.AUTH_CLIENT_SECRET }}" \
               "Auth0:ClientId=${{ secrets.AUTH_CLIENT_ID }}" \
