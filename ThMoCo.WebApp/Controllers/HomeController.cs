@@ -3,8 +3,7 @@ using ThMoCo.WebApp.IServices;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
-using Auth0.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+
 
 
 public class HomeController : Controller

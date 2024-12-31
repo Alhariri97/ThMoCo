@@ -37,6 +37,7 @@ builder.Services.Configure<OpenIdConnectOptions>(Auth0Constants.AuthenticationSc
     options.SaveTokens = true; 
 
 });
+builder.Services.AddSingleton<CartService>();
 
 builder.Services.AddControllersWithViews();
 var app = builder.Build();
