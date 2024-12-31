@@ -28,7 +28,7 @@
             <!-- Availability & Stock -->
             <p>
                 <strong>Availability:</strong>
-                @if (Model.IsAvailable)
+                @if (Model.IsAvailable) 
                 {
                     <span class="text-success">Available</span>
                 }
@@ -42,8 +42,14 @@
         </div>
 
         <!-- Card Footer -->
-        <div class="card-footer">
-            Supplier: @(Model.Supplier ?? "Unknown")
+        <div class="card-footer d-flex justify-content-between">
+            <span>Supplier: @(Model.Supplier ?? "Unknown")</span>
+            <form method="post" asp-action="AddToCart" asp-controller="Cart" class="add-to-cart-form">
+                <input type="hidden" name="productId" value="@Model.Id" />
+                <button type="submit" class="btn btn-success btn-sm">Add to Cart</button>
+            </form>
+
+
         </div>
     </div>
 </div>
