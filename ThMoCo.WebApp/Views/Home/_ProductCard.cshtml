@@ -27,16 +27,7 @@
 
             <!-- Availability & Stock -->
             <p>
-                <strong>Availability:</strong>
-                @if (Model.IsAvailable) 
-                {
-                    <span class="text-success">Available</span>
-                }
-                else
-                {
-                    <span class="text-danger">Out of Stock</span>
-                }
-                <br />
+
                 <strong>Stock:</strong> @Model.StockQuantity
             </p>
         </div>
