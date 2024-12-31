@@ -1,4 +1,5 @@
-﻿using ThMoCo.Api.DTO;
+﻿using Microsoft.EntityFrameworkCore;
+using ThMoCo.Api.DTO;
 using ThMoCo.Api.IServices;
 
 
@@ -91,31 +92,22 @@ namespace ThMoCo.Api.Services
             foreach (var updatedProduct in updatedProducts)
             {
                 var existingProduct = _products.FirstOrDefault(p => p.Id == updatedProduct.Id);
-
                 if (existingProduct != null)
                 {
-                    // Update existing product details, including price and stock
-                    existingProduct.Price = updatedProduct.Price * 1.1m;  // Increase price by 10%
-                    existingProduct.StockQuantity = updatedProduct.StockQuantity;
-                    existingProduct.Description = updatedProduct.Description;
-                    existingProduct.Category = updatedProduct.Category;
-                    existingProduct.ImageUrl = updatedProduct.ImageUrl;
-                    existingProduct.UpdatedDate = DateTime.Now; // Set the updated date
+                    // Update the existing product's price and increase stock quantity
+                    existingProduct.Price = updatedProduct.Price;
+                    existingProduct.StockQuantity += updatedProduct.StockQuantity; // Increase stock quantity
                 }
                 else
                 {
-                    // Add new product if not exists
+                    // Add new product if it doesn't exist
                     _products.Add(new ProductDTO
                     {
-                        Id = updatedProduct.Id,
                         Name = updatedProduct.Name,
-                        Price = updatedProduct.Price * 1.1m,  // Increase price by 10%
-                        StockQuantity = updatedProduct.StockQuantity,
                         Description = updatedProduct.Description,
+                        Price = updatedProduct.Price ,
                         Category = updatedProduct.Category,
-                        ImageUrl = updatedProduct.ImageUrl,
-                        CreatedDate = DateTime.Now, // Set the created date
-                        UpdatedDate = DateTime.Now  // Set the updated date
+                        StockQuantity = updatedProduct.StockQuantity
                     });
                 }
             }

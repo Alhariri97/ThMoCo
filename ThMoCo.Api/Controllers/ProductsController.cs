@@ -54,7 +54,7 @@ public class ProductsController : ControllerBase
 
     // POST /api/products/update
     [HttpPost("update")]
-    [Authorize(Roles = "Admin")] // Ensure this is accessible only to admin users
+    [Authorize(Roles = "admin")] // Ensure this is accessible only to admin users
     public async Task<IActionResult> UpdateProductCatalog([FromBody] List<ProductDTO> updatedProducts)
     {
         await _productService.UpdateProductCatalog(updatedProducts);

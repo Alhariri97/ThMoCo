@@ -1,6 +1,8 @@
 using Auth0.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
+using ThMoCo.WebApp.Controllers;
+using ThMoCo.WebApp.Helper;
 using ThMoCo.WebApp.IServices;
 using ThMoCo.WebApp.Services;
 
@@ -9,7 +11,11 @@ builder.Services.AddHttpClient<IProductService, ProductService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["Values:BaseAddress"]);
 });
+
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddHttpClient();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuth0WebAppAuthentication(options =>
 {
@@ -38,6 +44,7 @@ builder.Services.Configure<OpenIdConnectOptions>(Auth0Constants.AuthenticationSc
 
 });
 builder.Services.AddSingleton<CartService>();
+builder.Services.AddHttpClient<AdminController>();
 
 builder.Services.AddControllersWithViews();
 var app = builder.Build();
