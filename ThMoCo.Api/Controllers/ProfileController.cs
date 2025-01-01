@@ -25,7 +25,7 @@ public class ProfileController : ControllerBase
     [HttpPost("register")]
     public async Task<ActionResult<AppUser>> RegisterUser([FromBody] RegisterUserDTO userDto)
     {
-        if (userDto == null || string.IsNullOrWhiteSpace(userDto.UserId))
+        if (userDto == null || string.IsNullOrWhiteSpace(userDto.user_id))
         {
             return BadRequest("Invalid user data.");
         }
@@ -33,7 +33,7 @@ public class ProfileController : ControllerBase
         try
         {
             // Check if the user already exists
-            var existingUser =  _profileService.GetUserByAuthIdAsync(userDto.UserId);
+            var existingUser =  _profileService.GetUserByAuthIdAsync(userDto.user_id);
 
             if (existingUser != null)
             {
@@ -43,14 +43,13 @@ public class ProfileController : ControllerBase
             // Map the DTO to the AppUser model
             var newUser = new AppUser
             {
-                Name = userDto.Name,
-                Email = userDto.Email,
-                UserAuthId = userDto.UserId,
-                PhotoUrl = userDto.Picture,
-                PhoneNumber = userDto.PhoneNumber,
+                Name = userDto.name,
+                Email = userDto.email,
+                UserAuthId = userDto.user_id,
+                PhoneNumber = userDto.phone_number,
                 Role = "User", // Default role
-                IsEmailVerified = userDto.EmailVerified,
-                UpdatedAt = userDto.UpdatedAt,
+                IsEmailVerified = userDto.email_verified,
+                UpdatedAt = userDto.updated_at,
                 LastLogin = null,
                 Fund = 0.0, // Default fund value
             };
