@@ -1,0 +1,46 @@
+﻿@model ThMoCo.WebApp.Models.ProductDTO
+
+<div class="col">
+    <div class="card h-100">
+        <!-- Product Image -->
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <img src="@Model.ImageUrl" alt="@Model.Name" class="card-img-top" />
+        }
+        else
+        {
+            <img src="https://via.placeholder.com/150" alt="No Image" class="card-img-top" />
+        }
+
+        <div class="card-body">
+            <!-- Product Name -->
+            <h5 class="card-title">@Model.Name</h5>
+
+            <!-- Product Description -->
+            <p class="card-text">@Model.Description</p>
+
+            <!-- Pricing, Category, etc. -->
+            <p class="card-text">
+                <strong>Price:</strong> @Model.Price.ToString("C")<br />
+                <strong>Category:</strong> @Model.Category
+            </p>
+
+            <!-- Availability & Stock -->
+            <p>
+
+                <strong>Stock:</strong> @Model.StockQuantity
+            </p>
+        </div>
+
+        <!-- Card Footer -->
+        <div class="card-footer d-flex justify-content-between">
+            <span>Supplier: @(Model.Supplier ?? "Unknown")</span>
+            <form method="post" asp-action="AddToCart" asp-controller="Cart" class="add-to-cart-form">
+                <input type="hidden" name="productId" value="@Model.Id" />
+                <button type="submit" class="btn btn-success btn-sm">Add to Cart</button>
+            </form>
+
+
+        </div>
+    </div>
+</div>
