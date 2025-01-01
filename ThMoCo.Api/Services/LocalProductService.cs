@@ -76,7 +76,7 @@ namespace ThMoCo.Api.Services
             {
                 Id = p.Id,
                 Name = p.Name,
-                Price = p.Price,
+                Price = p.Price * 1.1m,
                 Category = p.Category,
                 StockQuantity = p.StockQuantity,
                 IsAvailable = p.StockQuantity > 0, // If stock quantity is more than 0, the product is available
