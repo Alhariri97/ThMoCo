@@ -5,6 +5,58 @@
 <p>Email: @Model.EmailAddress</p>
 <img src="@Model.ProfileImage" alt="Profile Picture" />
 
+<hr />
+
+<!-- PAYMENT CARD FORM -->
+<h3>Set Payment Card</h3>
+<form asp-controller="Account" asp-action="SavePaymentCard" method="post">
+    <div class="form-group">
+        <label for="CardNumber">Card Number</label>
+        <input type="text" class="form-control" id="CardNumber" name="CardNumber" value="@Model.CardNumber" />
+    </div>
+    <div class="form-group">
+        <label for="CardHolderName">Card Holder Name</label>
+        <input type="text" class="form-control" id="CardHolderName" name="CardHolderName" value="@Model.CardHolderName" />
+    </div>
+    <div class="form-group">
+        <label for="ExpiryDate">Expiry Date (MM/YY)</label>
+        <input type="text" class="form-control" id="ExpiryDate" name="ExpiryDate" value="@Model.ExpiryDate" />
+    </div>
+    <div class="form-group">
+        <label for="Cvv">CVV</label>
+        <input type="password" class="form-control" value="@Model.Cvv" id="Cvv" name="Cvv" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Payment Card</button>
+</form>
+
+<hr />
+
+<!-- ADDRESS FORM -->
+<h3>Set Address</h3>
+<form asp-controller="Account" asp-action="SaveAddress" method="post">
+    <div class="form-group">
+        <label for="Street">Street</label>
+        <input type="text" class="form-control" id="Street" name="Street" value="@Model.Street" />
+    </div>
+    <div class="form-group">
+        <label for="City">City</label>
+        <input type="text" class="form-control" id="City" name="City" value="@Model.City" />
+    </div>
+    <div class="form-group">
+        <label for="State">State</label>
+        <input type="text" class="form-control" id="State" name="State" value="@Model.State" />
+    </div>
+    <div class="form-group">
+        <label for="PostalCode">Postal Code</label>
+        <input type="text" class="form-control" id="PostalCode" name="PostalCode" value="@Model.PostalCode" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Address</button>
+</form>
+
+<hr />
+
 <p class="nav-item">
     <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
 </p>
