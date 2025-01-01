@@ -4,8 +4,11 @@ namespace ThMoCo.Api.IServices;
 
 public interface IProfileService
 {
-    AppUser GetUserByAuthIdAsync(string userAuthId);
     AppUser AddUserAsync(AppUser user);
+    AppUser GetUserByAuthIdAsync(string userAuthId);
+    AppUser UpdateUserAsync(AppUser user);
+
+
     PaymentCardDTO GetPaymentCard(string userId);
     PaymentCardDTO SavePaymentCard(string userId, PaymentCardDTO cardDto);
 
