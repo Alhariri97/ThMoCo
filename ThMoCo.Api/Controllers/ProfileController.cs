@@ -7,7 +7,7 @@ using ThMoCo.Api.IServices;
 namespace ThMoCo.Api.Controllers;
 
 
-[Authorize]
+//[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ProfileController : ControllerBase
@@ -70,7 +70,93 @@ public class ProfileController : ControllerBase
     }
 
 
+    /// <summary>
+    /// Retrieves the current user
+    /// </summary>
+    /// 
+    
+    [HttpGet("user")]
+    public ActionResult<AppUserDTO> GetUser()
+    {
 
+        try
+        {
+            var userId = GetCurrentUserId();
+
+            var existingUser = _profileService.GetUserByAuthIdAsync(userId);
+
+            if (existingUser == null)
+                return NotFound("No User found for this user.");
+
+            return Ok(existingUser);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error, Error:{ex.Message}.");
+
+        }
+        try
+        {
+
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error, Error:{ex.Message}.");
+
+        }
+    }
+
+    [Authorize]
+    [HttpPut("user")]
+    public ActionResult<AppUserDTO> UpdateUserInfo([FromBody] AppUserDTO userDto)
+    {
+
+        if (userDto == null )
+        {
+            return BadRequest("Invalid user data.");
+        }
+        try
+        {
+            var userId = GetCurrentUserId();
+            var existingUser = _profileService.GetUserByAuthIdAsync(userId);
+
+            // Retrieve the existing user by Auth ID
+            if (existingUser == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            // Update user properties
+            existingUser.Name = userDto.Name ?? existingUser.Name;
+            existingUser.PhoneNumber = userDto.PhoneNumber ?? existingUser.PhoneNumber;
+            existingUser.PhotoUrl = userDto.PhotoUrl ?? existingUser.PhotoUrl;
+            existingUser.UpdatedAt = DateTime.UtcNow; // Set the updated timestamp
+
+            // Save changes to the database
+            _profileService.UpdateUserAsync(existingUser);
+
+            return Ok(existingUser);
+
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error: {ex.Message}");
+            return StatusCode(500, $"Internal server error, Error:{ex.Message}.");
+
+        }
+    }
 
 
 
@@ -86,16 +172,43 @@ public class ProfileController : ControllerBase
     [HttpGet("paymentcard")]
     public ActionResult<PaymentCardDTO> GetPaymentCard()
     {
-        // Get current user ID from claims (assuming the NameIdentifier claim is your UserId).
-        var userId = GetCurrentUserId();
 
-        var cardDto = _profileService.GetPaymentCard(userId);
+        try
+        {    
+            var userId = GetCurrentUserId();
 
-        if (cardDto == null)
-            return NotFound("No payment card found for this user.");
+            var cardDto = _profileService.GetPaymentCard(userId);
 
-        // In real world, mask the card or return a safe subset of data
-        return Ok(cardDto);
+            if (cardDto == null)
+                return NotFound("No payment card found for this user.");
+
+            // In real world, mask the card or return a safe subset of data
+            return Ok(cardDto);
+
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error: {ex.Message}");
+            return StatusCode(500, $"Internal server error, Error:{ex.Message}.");
+        }
+
+        try
+        {
+
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error: {ex.Message}");
+            return StatusCode(500, $"Internal server error, Error:{ex.Message}.");
+        }
     }
 
     /// <summary>
@@ -104,12 +217,25 @@ public class ProfileController : ControllerBase
     [HttpPost("paymentcard")]
     public ActionResult<PaymentCardDTO> SavePaymentCard([FromBody] PaymentCardDTO cardDto)
     {
-        var userId = GetCurrentUserId();
-        var payment = _profileService.SavePaymentCard(userId, cardDto);
 
-        Console.WriteLine("Payment card saved successfully.");
+        try
+        {
+            var userId = GetCurrentUserId();
+            var payment = _profileService.SavePaymentCard(userId, cardDto);
 
-        return Ok(payment);
+            Console.WriteLine("Payment card saved successfully.");
+
+            return Ok(payment);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error: {ex.Message}");
+            return StatusCode(500, $"Internal server error, Error:{ex.Message}.");
+        }
     }
 
 
@@ -119,13 +245,26 @@ public class ProfileController : ControllerBase
     [HttpGet("address")]
     public ActionResult<AddressDTO> GetAddress()
     {
-        var userId = GetCurrentUserId();
-        var addressDto = _profileService.GetAddress(userId);
 
-        if (addressDto == null)
-            return NotFound("No address found for this user.");
+        try
+        {
+            var userId = GetCurrentUserId();
+            var addressDto = _profileService.GetAddress(userId);
 
-        return Ok(addressDto);
+            if (addressDto == null)
+                return NotFound("No address found for this user.");
+
+            return Ok(addressDto);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error: {ex.Message}");
+            return StatusCode(500, $"Internal server error, Error:{ex.Message}.");
+        }
     }
 
     /// <summary>
@@ -134,11 +273,25 @@ public class ProfileController : ControllerBase
     [HttpPost("address")]
     public ActionResult<AddressDTO> SaveAddress([FromBody] AddressDTO addressDto)
     {
-        var userId = GetCurrentUserId();
-       var updatedCard =  _profileService.SaveAddress(userId, addressDto);
 
-        Console.WriteLine("Address saved successfully.");
-        return Ok(updatedCard);
+        try
+        {
+            var userId = GetCurrentUserId();
+            var updatedCard = _profileService.SaveAddress(userId, addressDto);
+
+            Console.WriteLine("Address saved successfully.");
+            return Ok(updatedCard);
+
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error: {ex.Message}");
+            return StatusCode(500, $"Internal server error, Error:{ex.Message}.");
+        }
 
     }
 
@@ -148,9 +301,24 @@ public class ProfileController : ControllerBase
     /// </summary>
     private string GetCurrentUserId()
     {
-        // This assumes you're using standard .NET Identity or a similar approach
-        // If you're using JWT, you might get the user ID from a different claim.
-        var userIdClaim = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");// Use the 'sub' claim
-        return userIdClaim != null ? userIdClaim.Value : string.Empty;
+        try
+        {
+            // Attempt to retrieve the user ID claim
+            var userIdClaim = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"); // Use the 'sub' claim
+
+            // Validate the claim
+            if (userIdClaim == null || string.IsNullOrWhiteSpace(userIdClaim.Value))
+            {
+               throw new Exception("User ID claim is missing or invalid.");
+            }
+
+            return userIdClaim.Value;
+        }
+        catch (Exception ex)
+        {
+            // Log or handle the error if necessary
+            throw new Exception("Error extracting User ID from claims.", ex);
+        }
     }
+
 }

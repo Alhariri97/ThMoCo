@@ -29,6 +29,49 @@ namespace ThMoCo.WebApp.Services
             return _httpClient;
         }
 
+
+
+
+
+        public async Task<AppUserDTO> GetUser()
+        {
+            try
+            {
+                var httpClient = await CreateAuthenticatedClientAsync();
+                var response = await httpClient.GetAsync("/api/Profile/user");
+                response.EnsureSuccessStatusCode();
+
+                // Parse the returned JSON into an AppUserDTO
+                return await response.Content.ReadFromJsonAsync<AppUserDTO>();
+            }
+            catch (Exception ex)
+            {
+                // Handle errors gracefully
+                throw new Exception();
+            }
+        }
+
+        public async Task<AppUserDTO> SaveUser(AppUserDTO userDTO)
+        {
+            var httpClient = await CreateAuthenticatedClientAsync();
+
+            // Use PUT instead of POST
+            var response = await httpClient.PutAsJsonAsync("/api/Profile/user", userDTO);
+            response.EnsureSuccessStatusCode();
+
+            // Parse the returned JSON into an AppUserDTO
+            return await response.Content.ReadFromJsonAsync<AppUserDTO>();
+        }
+
+
+
+
+
+
+
+
+
+
         public async Task<PaymentCardDTO> GetPaymentCard()
         {
             try

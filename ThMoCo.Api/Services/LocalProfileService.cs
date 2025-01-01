@@ -52,9 +52,10 @@ namespace ThMoCo.Api.Services
         {
             new AppUser
             {
+                Id = 2,
                 Name = "John Doe",
                 Email = "john.doe@example.com",
-                UserAuthId = "wMO0z3baPdNSN7edWYKKc1M39gd3g9XE@clients",
+                UserAuthId = "auth0|677547672b430092f2ce6f83",
                 PaymentCard = new PaymentCard
                 {
                     CardNumber = "4111111111111111",
@@ -69,7 +70,35 @@ namespace ThMoCo.Api.Services
                     State = "NY",
                     PostalCode = "10001"
                 }
-            }
+            },
+                new AppUser
+                {
+                    Id = 1,
+                    Name = "John Doe",
+                    Email = "john.doe@example.com",
+                    UserAuthId = "wMO0z3baPdNSN7edWYKKc1M39gd3g9XE@clients",
+                    PhoneNumber = "123-456-7890",
+                    Fund = 100.50,
+                    UpdatedAt = DateTime.UtcNow,
+                    LastLogin = DateTime.UtcNow.AddDays(-1),
+                    Provider = "auth0",
+                    Role = "User",
+                    IsEmailVerified = true,
+                    PaymentCard = new PaymentCard
+                    {
+                        CardNumber = "4111111111111111",
+                        CardHolderName = "John Doe",
+                        ExpiryDate = "12/24",
+                        Cvv = "123"
+                    },
+                    Address = new Address
+                    {
+                        Street = "123 Main Street",
+                        City = "New York",
+                        State = "NY",
+                        PostalCode = "10001"
+                    }
+                },
 
         };
 
@@ -81,7 +110,7 @@ namespace ThMoCo.Api.Services
                       .FirstOrDefault(u => u.UserAuthId == user.UserAuthId);
             if (doesUserExist != null)
             {
-                return null;
+                throw new KeyNotFoundException("User not found.");
             }
             _users.Add(user);
 
@@ -94,13 +123,34 @@ namespace ThMoCo.Api.Services
             var user = _users
                       .FirstOrDefault(u => u.UserAuthId == userAuthId);
 
-            if (user != null)
+            if (user == null)
             {
-                return null;
+                throw new KeyNotFoundException("User not found.");
             }
             return user;
 
         }
+        public AppUser UpdateUserAsync(AppUser userDto)
+        {
+            // Find the existing user in the in-memory collection by ID
+            var existingUser = _users.FirstOrDefault(u => u.Id == userDto.Id);
+            if (existingUser == null)
+            {
+                throw new KeyNotFoundException("User not found.");
+            }
+
+            // Update the user properties
+            existingUser.Name = userDto.Name ?? existingUser.Name;
+            existingUser.Email = userDto.Email ?? existingUser.Email;
+            existingUser.PhoneNumber = userDto.PhoneNumber ?? existingUser.PhoneNumber;
+            existingUser.PhotoUrl = userDto.PhotoUrl ?? existingUser.PhotoUrl;
+            existingUser.Fund = userDto.Fund ?? existingUser.Fund;
+            existingUser.UpdatedAt = DateTime.UtcNow; // Update the timestamp
+
+            // Return the updated user as a DTO
+            return existingUser;
+        }
+
 
         /// <summary>
         /// Gets the current user’s payment card info, if any, from in-memory data.
@@ -110,7 +160,7 @@ namespace ThMoCo.Api.Services
             // Look up by userId in the in-memory list
             var card = _paymentCards.FirstOrDefault(pc => pc.UserId == userId);
 
-            if (card == null) return null; // If not found, return null
+            if (card == null) throw new KeyNotFoundException("User not found.");
 
             // Return a copy, or the same object if you prefer
             return new PaymentCardDTO
@@ -158,7 +208,7 @@ namespace ThMoCo.Api.Services
         {
             // Look up by userId in the in-memory list
             var address = _addresses.FirstOrDefault(a => a.UserId == userId);
-            if (address == null) return null;
+            if (address == null) throw new KeyNotFoundException("User not found.");
 
             // Return a copy, or the same object if you prefer
             return new AddressDTO

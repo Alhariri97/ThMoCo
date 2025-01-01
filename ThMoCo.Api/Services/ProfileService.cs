@@ -22,7 +22,7 @@ public class ProfileService : IProfileService
                   .FirstOrDefault(u => u.UserAuthId == user.UserAuthId);
         if (doesUserExist != null)
         {
-            return null;
+            throw new KeyNotFoundException("User not found.");
         }
         _dbContext.AppUsers.Add(user);
         _dbContext.SaveChanges();
@@ -38,11 +38,31 @@ public class ProfileService : IProfileService
 
         if (user != null)
         {
-            return null;
+            throw new KeyNotFoundException("User not found.");
         }
         return user;
 
     }
+    public AppUser? UpdateUserAsync(AppUser user)
+    {
+        // Find the existing user in the database by UserAuthId
+        var existedUser = _dbContext.AppUsers
+                      .FirstOrDefault(u => u.UserAuthId == user.UserAuthId);
+
+        if (existedUser == null)
+        {
+            throw new KeyNotFoundException("User not found.");
+        }
+
+        // Update the user entity in the database
+        _dbContext.AppUsers.Update(user);
+        _dbContext.SaveChanges();
+
+        // Map the updated AppUser to AppUserDTO
+        return existedUser;
+    }
+
+
 
 
 
@@ -56,8 +76,7 @@ public class ProfileService : IProfileService
         var card = _dbContext.PaymentCards
             .FirstOrDefault(pc => pc.UserId == userId);
 
-        if (card == null)
-            return null;
+        if (card == null) throw new KeyNotFoundException("User not found.");
 
         // Map entity to DTO
         return new PaymentCardDTO
@@ -114,7 +133,7 @@ public class ProfileService : IProfileService
             .FirstOrDefault(a => a.UserId == userId);
 
         if (address == null)
-            return null;
+            throw new KeyNotFoundException("User not found.");
 
         // Map entity to DTO
         return new AddressDTO
