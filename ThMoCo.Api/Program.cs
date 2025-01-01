@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ThMoCo.Api.Data;
 using ThMoCo.Api.IServices;
@@ -46,6 +47,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         options.Authority = $"https://{builder.Configuration["Auth0:Domain"]}/";
         options.Audience = builder.Configuration["Auth0:Audience"];
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = $"https://{builder.Configuration["Auth0:Domain"]}/",
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["Auth0:Audience"],
+            ValidateLifetime = true,
+            RoleClaimType = "permissions"
+        };
+
     });
 
 builder.Services.AddAuthorization();
@@ -81,18 +93,13 @@ else
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment() || builder.Configuration.GetValue<bool>("EnableSwaggerInProduction"))
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        // Optional: Set up Swagger UI to be accessible under a custom path, for instance:
-        // c.RoutePrefix = "docs"; // This will make it available at /docs
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
 
-        // Optional: Enable authentication in the Swagger UI
-        // c.DefaultModelsExpandDepth(-1); // Optional, disable models expansion for better security
     });
 }
 
@@ -100,14 +107,14 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.MapGet("/protected", () => "You are authorized!")
+   .RequireAuthorization();
 
 
 app.MapControllers();
 
 app.Run();
 
-// Explicitly define the Program class for integration testing purposes
 namespace ThMoCo.Api
 {
     public partial class Program { }

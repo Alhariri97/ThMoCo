@@ -23,29 +23,28 @@
                name="search"
                placeholder="Search products..."
                value="@ViewContext.HttpContext.Request.Query["search"]" />
-               <button type="submit" class="btn btn-primary">Search</button>
-
+        <button type="submit" class="btn btn-primary">Search</button>
     </div>
-    
+
     <!-- Category Field -->
     <div class="input-group mb-2">
         <label class="input-group-text" for="categorySelect">Category</label>
-        <select class="form-select" id="categorySelect" name="category">
+        <select class="form-select" id="categorySelect" name="category" onchange="submitForm()">
             <option value="">All Categories</option>
             @foreach (var cat in categories)
             {
                 var selected = (cat == currentCategory) ? "selected" : "";
                 @if (cat == currentCategory)
                 {
-                    <option value="@cat" selected>@cat</option>
+                            <option value="@cat" selected>@cat</option>
                 }
                 else
                 {
-                    <option value="@cat">@cat</option>
+                            <option value="@cat">@cat</option>
                 }
             }
         </select>
-                <span class="input-group-text">Min Price</span>
+        <span class="input-group-text">Min Price</span>
         <input type="number"
                class="form-control"
                name="minPrice"
@@ -63,9 +62,16 @@
                step="10.0"
                value="@ViewContext.HttpContext.Request.Query["maxPrice"]" />
 
+        <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">Clear</a>
     </div>
-
 </form>
+
+<script>
+    function submitForm() {
+        document.querySelector('form').submit();
+    }
+</script>
+
 
 
 
@@ -79,64 +85,19 @@
 }
 else
 {
-    <!-- 
-        Bootstrap grid classes: 
-        - "row row-cols-1 row-cols-md-2 row-cols-lg-3" creates responsive columns
-        - "g-4" adds spacing between columns
-    -->
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+
+    <p>
+        <a asp-action="CallProtectedApi">Call the Protected Minimal API</a>
+    </p>
+
+    <p>
+        <a asp-action="CallProtectedAdminApi">Call the CallProtectedAdminApi API</a>
+    </p>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-5 g-4">
         @foreach (var product in Model)
         {
-            <div class="col">
-                <div class="card h-100">
-                    <!-- Product Image -->
-                    @if (!string.IsNullOrEmpty(product.ImageUrl))
-                    {
-                        <img src="@product.ImageUrl" alt="@product.Name" class="card-img-top" />
-                    }
-                    else
-                    {
-                        <!-- Fallback image or placeholder -->
-                        <img src="https://via.placeholder.com/150" alt="No Image" class="card-img-top" />
-                    }
-
-                    <div class="card-body">
-                        <!-- Product Name -->
-                        <h5 class="card-title">@product.Name</h5>
-
-                        <!-- Product Description -->
-                        <p class="card-text">
-                            @product.Description
-                        </p>
-
-                        <!-- Pricing, Category, etc. -->
-                        <p class="card-text">
-                            <strong>Price:</strong> @product.Price.ToString("C")<br />
-                            <strong>Category:</strong> @product.Category
-                        </p>
-
-                        <!-- Availability & Stock -->
-                        <p>
-                            <strong>Availability:</strong>
-                            @if (product.IsAvailable)
-                            {
-                                <span class="text-success">Available</span>
-                            }
-                            else
-                            {
-                                <span class="text-danger">Out of Stock</span>
-                            }
-                            <br />
-                            <strong>Stock:</strong> @product.StockQuantity
-                        </p>
-                    </div>
-
-                    <!-- Card Footer (optional) -->
-                    <div class="card-footer">
-                        Supplier: @(product.Supplier ?? "Unknown")
-                    </div>
-                </div>
-            </div>
+            @await Html.PartialAsync("_ProductCard", product)
         }
     </div>
+
 }

@@ -54,7 +54,7 @@ public class ProductsController : ControllerBase
 
     // POST /api/products/update
     [HttpPost("update")]
-    [Authorize(Roles = "Admin")] // Ensure this is accessible only to admin users
+    [Authorize(Roles = "admin")] // Ensure this is accessible only to admin users
     public async Task<IActionResult> UpdateProductCatalog([FromBody] List<ProductDTO> updatedProducts)
     {
         await _productService.UpdateProductCatalog(updatedProducts);
@@ -71,5 +71,19 @@ public class ProductsController : ControllerBase
     {
         var categories = _productService.GetProductCategories();
         return Ok(categories);
+    }
+
+}
+
+
+[Authorize(Roles = "admin")]
+[Route("api/[controller]")]
+public class AdminController : ControllerBase
+{
+    // Only users with the "admin" role can access
+    [HttpGet("secret")]
+    public IActionResult GetSecret()
+    {
+        return Ok("You are an admin!");
     }
 }
