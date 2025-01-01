@@ -10,9 +10,9 @@ namespace ThMoCo.Api.Services
 {
     public class ProductService : IProductService
     {
-        private readonly ProductsContext _context;
+        private readonly AppDbContext _context;
 
-        public ProductService(ProductsContext context)
+        public ProductService(AppDbContext context)
         {
             _context = context;
         }
@@ -76,7 +76,7 @@ namespace ThMoCo.Api.Services
                         Name = p.Name,
                         Description = p.Description,
                         Price = p.Price,
-                        IsAvailable = p.StockQuantity > 0 
+                        IsAvailable = p.StockQuantity > 0
                     })
                     .ToListAsync();
 
