@@ -36,7 +36,7 @@ public class ProfileService : IProfileService
         var user = _dbContext.AppUsers
                   .FirstOrDefault(u => u.UserAuthId == userAuthId);
 
-        if (user != null)
+        if (user == null)
         {
             throw new KeyNotFoundException("User not found.");
         }
