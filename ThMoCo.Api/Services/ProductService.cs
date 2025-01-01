@@ -100,12 +100,13 @@ namespace ThMoCo.Api.Services
 
                     if (existingProduct != null)
                     {
-                        // Update the existing product with the new price (price + 10%)
-                        existingProduct.Price = product.Price * 1.1m;
+                        // Update the existing product's price and increase stock quantity
+                        existingProduct.Price = product.Price;
+                        existingProduct.StockQuantity += product.StockQuantity; // Increase stock quantity
                     }
                     else
                     {
-                        // Add new product if not exists
+                        // Add new product if it doesn't exist
                         _context.Products.Add(new ProductDTO
                         {
                             Name = product.Name,

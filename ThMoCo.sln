@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThMoCo.Api", "ThMoCo.Api\Th
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThMoCo.Tests", "ThMoCo.Tests\ThMoCo.Tests.csproj", "{D925085C-E347-43F1-AA16-46B9D68C7D8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThMoCo.WebApp", "ThMoCo.WebApp\ThMoCo.WebApp.csproj", "{1F57E241-1759-4FCE-84B2-826DE857F02A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThMoCo.WebApp", "ThMoCo.WebApp\ThMoCo.WebApp.csproj", "{1F57E241-1759-4FCE-84B2-826DE857F02A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

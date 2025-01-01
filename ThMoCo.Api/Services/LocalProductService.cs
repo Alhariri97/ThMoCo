@@ -1,4 +1,5 @@
-﻿using ThMoCo.Api.DTO;
+﻿using Microsoft.EntityFrameworkCore;
+using ThMoCo.Api.DTO;
 using ThMoCo.Api.IServices;
 
 
@@ -9,16 +10,16 @@ namespace ThMoCo.Api.Services
         // Sample list of products for demo purposes
         private readonly List<ProductDTO> _products = new List<ProductDTO>
         {
-            new ProductDTO { Id = 1, Name = "Laptop", Price = 999.99m, Category = "Electronics", StockQuantity = 10, IsAvailable = true, ImageUrl = "http://example.com/laptop.jpg", CreatedDate = DateTime.Now.AddMonths(-6), UpdatedDate = DateTime.Now, Description = "A high-performance laptop for work and gaming." },
-            new ProductDTO { Id = 2, Name = "Smartphone", Price = 799.99m, Category = "Electronics", StockQuantity = 20, IsAvailable = true, ImageUrl = "http://example.com/smartphone.jpg", CreatedDate = DateTime.Now.AddMonths(-3), UpdatedDate = DateTime.Now, Description = "A modern smartphone with excellent camera quality." },
-            new ProductDTO { Id = 3, Name = "Headphones", Price = 199.99m, Category = "Accessories", StockQuantity = 50, IsAvailable = true, ImageUrl = "http://example.com/headphones.jpg", CreatedDate = DateTime.Now.AddMonths(-1), UpdatedDate = DateTime.Now, Description = "Noise-canceling headphones for immersive sound." },
-            new ProductDTO { Id = 4, Name = "Monitor", Price = 299.99m, Category = "Electronics", StockQuantity = 5, IsAvailable = true, ImageUrl = "http://example.com/monitor.jpg", CreatedDate = DateTime.Now.AddMonths(-2), UpdatedDate = DateTime.Now, Description = "A 24-inch monitor with stunning picture quality." },
-            new ProductDTO { Id = 5, Name = "Monitor 2", Price = 299.99m, Category = "Electronics", StockQuantity = 5, IsAvailable = true, ImageUrl = "http://example.com/monitor.jpg", CreatedDate = DateTime.Now.AddMonths(-2), UpdatedDate = DateTime.Now, Description = "Another 24-inch monitor, great for dual setups." },
-            new ProductDTO { Id = 6, Name = "Monitor 3", Price = 299.99m, Category = "Electronics", StockQuantity = 5, IsAvailable = true, ImageUrl = "http://example.com/monitor.jpg", CreatedDate = DateTime.Now.AddMonths(-2), UpdatedDate = DateTime.Now, Description = "A 27-inch monitor with ultra-clear resolution." },
-            new ProductDTO { Id = 7, Name = "Tablet", Price = 499.99m, Category = "Electronics", StockQuantity = 15, IsAvailable = true, ImageUrl = "http://example.com/tablet.jpg", CreatedDate = DateTime.Now.AddMonths(-5), UpdatedDate = DateTime.Now, Description = "A lightweight tablet, perfect for reading and browsing." },
-            new ProductDTO { Id = 8, Name = "Gaming Chair", Price = 199.99m, Category = "Furniture", StockQuantity = 25, IsAvailable = true, ImageUrl = "http://example.com/gamingchair.jpg", CreatedDate = DateTime.Now.AddMonths(-4), UpdatedDate = DateTime.Now, Description = "Ergonomic gaming chair for extended comfort." },
-            new ProductDTO { Id = 9, Name = "Keyboard", Price = 89.99m, Category = "Accessories", StockQuantity = 30, IsAvailable = true, ImageUrl = "http://example.com/keyboard.jpg", CreatedDate = DateTime.Now.AddMonths(-6), UpdatedDate = DateTime.Now, Description = "Mechanical keyboard with customizable RGB lighting." },
-            new ProductDTO { Id = 10, Name = "Wireless Mouse", Price = 49.99m, Category = "Accessories", StockQuantity = 40, IsAvailable = true, ImageUrl = "http://example.com/mouse.jpg", CreatedDate = DateTime.Now.AddMonths(-2), UpdatedDate = DateTime.Now, Description = "A wireless mouse with high precision and long battery life." }
+            new ProductDTO { Id = 1, Name = "Laptop", Price = 999.99m, Category = "Electronics", StockQuantity = 10, IsAvailable = true, ImageUrl = null, CreatedDate = DateTime.Now.AddMonths(-6), UpdatedDate = DateTime.Now, Description = "A high-performance laptop for work and gaming." },
+            new ProductDTO { Id = 2, Name = "Smartphone", Price = 799.99m, Category = "Electronics", StockQuantity = 20, IsAvailable = true, ImageUrl = null, CreatedDate = DateTime.Now.AddMonths(-3), UpdatedDate = DateTime.Now, Description = "A modern smartphone with excellent camera quality." },
+            new ProductDTO { Id = 3, Name = "Headphones", Price = 199.99m, Category = "Accessories", StockQuantity = 50, IsAvailable = true, ImageUrl = null, CreatedDate = DateTime.Now.AddMonths(-1), UpdatedDate = DateTime.Now, Description = "Noise-canceling headphones for immersive sound." },
+            new ProductDTO { Id = 4, Name = "Monitor", Price = 299.99m, Category = "Electronics", StockQuantity = 5, IsAvailable = true, ImageUrl = null, CreatedDate = DateTime.Now.AddMonths(-2), UpdatedDate = DateTime.Now, Description = "A 24-inch monitor with stunning picture quality." },
+            new ProductDTO { Id = 5, Name = "Monitor 2", Price = 299.99m, Category = "Electronics", StockQuantity = 5, IsAvailable = true, ImageUrl = null, CreatedDate = DateTime.Now.AddMonths(-2), UpdatedDate = DateTime.Now, Description = "Another 24-inch monitor, great for dual setups." },
+            new ProductDTO { Id = 6, Name = "Monitor 3", Price = 299.99m, Category = "Electronics", StockQuantity = 5, IsAvailable = true, ImageUrl = null, CreatedDate = DateTime.Now.AddMonths(-2), UpdatedDate = DateTime.Now, Description = "A 27-inch monitor with ultra-clear resolution." },
+            new ProductDTO { Id = 7, Name = "Tablet", Price = 499.99m, Category = "Electronics", StockQuantity = 15, IsAvailable = true, ImageUrl = null, CreatedDate = DateTime.Now.AddMonths(-5), UpdatedDate = DateTime.Now, Description = "A lightweight tablet, perfect for reading and browsing." },
+            new ProductDTO { Id = 8, Name = "Gaming Chair", Price = 199.99m, Category = "Furniture", StockQuantity = 25, IsAvailable = true, ImageUrl = null, CreatedDate = DateTime.Now.AddMonths(-4), UpdatedDate = DateTime.Now, Description = "Ergonomic gaming chair for extended comfort." },
+            new ProductDTO { Id = 9, Name = "Keyboard", Price = 89.99m, Category = "Accessories", StockQuantity = 30, IsAvailable = true, ImageUrl = null, CreatedDate = DateTime.Now.AddMonths(-6), UpdatedDate = DateTime.Now, Description = "Mechanical keyboard with customizable RGB lighting." },
+            new ProductDTO { Id = 10, Name = "Wireless Mouse", Price = 49.99m, Category = "Accessories", StockQuantity = 40, IsAvailable = true, ImageUrl = null, CreatedDate = DateTime.Now.AddMonths(-2), UpdatedDate = DateTime.Now, Description = "A wireless mouse with high precision and long battery life." }
         };
 
         // Retrieves a list of products based on optional filtering parameters
@@ -91,31 +92,22 @@ namespace ThMoCo.Api.Services
             foreach (var updatedProduct in updatedProducts)
             {
                 var existingProduct = _products.FirstOrDefault(p => p.Id == updatedProduct.Id);
-
                 if (existingProduct != null)
                 {
-                    // Update existing product details, including price and stock
-                    existingProduct.Price = updatedProduct.Price * 1.1m;  // Increase price by 10%
-                    existingProduct.StockQuantity = updatedProduct.StockQuantity;
-                    existingProduct.Description = updatedProduct.Description;
-                    existingProduct.Category = updatedProduct.Category;
-                    existingProduct.ImageUrl = updatedProduct.ImageUrl;
-                    existingProduct.UpdatedDate = DateTime.Now; // Set the updated date
+                    // Update the existing product's price and increase stock quantity
+                    existingProduct.Price = updatedProduct.Price;
+                    existingProduct.StockQuantity += updatedProduct.StockQuantity; // Increase stock quantity
                 }
                 else
                 {
-                    // Add new product if not exists
+                    // Add new product if it doesn't exist
                     _products.Add(new ProductDTO
                     {
-                        Id = updatedProduct.Id,
                         Name = updatedProduct.Name,
-                        Price = updatedProduct.Price * 1.1m,  // Increase price by 10%
-                        StockQuantity = updatedProduct.StockQuantity,
                         Description = updatedProduct.Description,
+                        Price = updatedProduct.Price ,
                         Category = updatedProduct.Category,
-                        ImageUrl = updatedProduct.ImageUrl,
-                        CreatedDate = DateTime.Now, // Set the created date
-                        UpdatedDate = DateTime.Now  // Set the updated date
+                        StockQuantity = updatedProduct.StockQuantity
                     });
                 }
             }

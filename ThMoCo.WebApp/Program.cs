@@ -1,4 +1,8 @@
 using Auth0.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
+using ThMoCo.WebApp.Controllers;
+using ThMoCo.WebApp.Helper;
 using ThMoCo.WebApp.IServices;
 using ThMoCo.WebApp.Services;
 
@@ -8,29 +12,46 @@ builder.Services.AddHttpClient<IProductService, ProductService>(client =>
     client.BaseAddress = new Uri(builder.Configuration["Values:BaseAddress"]);
 });
 
-// Cookie configuration for HTTPS
-//  builder.Services.Configure<CookiePolicyOptions>(options =>
-//  {
-//     options.MinimumSameSitePolicy = SameSiteMode.None;
-//  });
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddHttpClient();
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddAuth0WebAppAuthentication(options =>
 {
-    //options.Domain = "dev-wg8ow1pequtk5eia.uk.auth0.com";
-    //options.ClientId = "5gbJNYfyURNS9ZiyxeV48PgTgieI6M50";
     options.Domain = builder.Configuration["Auth0:Domain"];
     options.ClientId = builder.Configuration["Auth0:ClientId"];
+    options.ClientSecret = builder.Configuration["Auth0:ClientSecret"];
+    options.Scope = "openid profile email";
+});
+builder.Services.Configure<OpenIdConnectOptions>(Auth0Constants.AuthenticationScheme, options =>
+{
+    options.ResponseType = "code";
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        RoleClaimType = "permissions" 
+    };
+    options.Events = new OpenIdConnectEvents
+    {
+        OnRedirectToIdentityProvider = context =>
+        {
+        context.ProtocolMessage.SetParameter("audience", builder.Configuration["Values:AuthAudience"]);
+            return Task.CompletedTask;
+        }
+    };
+
+    options.SaveTokens = true; 
 
 });
+builder.Services.AddSingleton<CartService>();
+builder.Services.AddHttpClient<AdminController>();
+
 builder.Services.AddControllersWithViews();
 var app = builder.Build();
-// Add services to the container.
 
-
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
