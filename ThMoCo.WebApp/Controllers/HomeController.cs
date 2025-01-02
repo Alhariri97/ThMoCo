@@ -3,6 +3,7 @@ using ThMoCo.WebApp.IServices;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
+using ThMoCo.WebApp.Models;
 
 
 
@@ -11,13 +12,16 @@ public class HomeController : Controller
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IProductService _productService;
     private readonly string _baseAddress;
+    private readonly IProfileService _profileService;
 
     public HomeController(IHttpClientFactory httpClientFactory,
-        IProductService productService, IConfiguration configuration)
+        IProductService productService, IConfiguration configuration,
+        IProfileService profileService)
     {
         _httpClientFactory = httpClientFactory;
         _productService = productService;
         _baseAddress = configuration["Values:BaseAddress"];
+        _profileService = profileService;
 
     }
 
@@ -27,7 +31,16 @@ public class HomeController : Controller
         var categories = await _productService.GetCategoriesAsync();
         ViewBag.Categories = categories;
 
-        return View(products);
+        
+        HomeViewModel homeViewModel = new HomeViewModel()
+        {
+            Products = products,
+            Categories = categories,
+        };
+
+        var currentPhotoClaim = User.Claims.FirstOrDefault(c => c.Type == "PhotoUrl");
+
+        return View(homeViewModel);
     }
     public async Task<IActionResult> Products(string? search, string? category, decimal? minPrice, decimal? maxPrice)
     {
