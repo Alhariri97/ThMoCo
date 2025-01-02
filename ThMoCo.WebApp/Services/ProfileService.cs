@@ -135,5 +135,15 @@ namespace ThMoCo.WebApp.Services
             return updatedAddressDto;
         }
 
+        public async Task<AppUserDTO> AddFund(AddFundsDTO addFundsDTO)
+        {
+            var httpClient = await CreateAuthenticatedClientAsync();
+
+            var response = await httpClient.PostAsJsonAsync("/api/Profile/addfunds", addFundsDTO);
+            response.EnsureSuccessStatusCode();
+            var updatedAddressDto = await response.Content.ReadFromJsonAsync<AppUserDTO>();
+
+            return updatedAddressDto;
+        }
     }
 }

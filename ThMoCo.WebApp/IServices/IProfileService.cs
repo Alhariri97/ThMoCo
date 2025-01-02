@@ -14,4 +14,7 @@ public interface IProfileService
     Task<AppUserDTO> GetUser();
     Task<AppUserDTO> SaveUser(AppUserDTO userDTO);
 
+
+    Task<AppUserDTO> AddFund(AddFundsDTO addFundsDTO);
+
 }
