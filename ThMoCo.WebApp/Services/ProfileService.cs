@@ -137,13 +137,26 @@ namespace ThMoCo.WebApp.Services
 
         public async Task<AppUserDTO> AddFund(AddFundsDTO addFundsDTO)
         {
-            var httpClient = await CreateAuthenticatedClientAsync();
+            try
+            {
+                var httpClient = await CreateAuthenticatedClientAsync();
 
-            var response = await httpClient.PostAsJsonAsync("/api/Profile/addfunds", addFundsDTO);
-            response.EnsureSuccessStatusCode();
-            var updatedAddressDto = await response.Content.ReadFromJsonAsync<AppUserDTO>();
+                var response = await httpClient.PostAsJsonAsync("/api/Profile/addfunds", addFundsDTO);
+                if (response.IsSuccessStatusCode)
+                {
+                    var updatedAddressDto = await response.Content.ReadFromJsonAsync<AppUserDTO>();
 
-            return updatedAddressDto;
+                    return updatedAddressDto;
+                }
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Error: {errorMessage}");
+                throw new Exception(errorMessage);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+
+            }
         }
     }
 }
