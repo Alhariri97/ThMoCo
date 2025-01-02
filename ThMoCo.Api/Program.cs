@@ -69,7 +69,7 @@ if (builder.Environment.IsDevelopment())
     Console.WriteLine("Registering LocalProductService as IProductService");
     builder.Services.AddSingleton<IProductService, LocalProductService>();
     builder.Services.AddSingleton<IProfileService, LocalProfileService>();
-
+    builder.Services.AddSingleton<IOrderService, LocalOrderService>();
 }
 else
 {
@@ -90,6 +90,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 }
 
 //////////////////////////////////////
