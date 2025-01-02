@@ -282,7 +282,7 @@ namespace ThMoCo.WebApp.Controllers
             }
             catch (Exception ex)
             {
-                return NotFound("Error Adding Funds.");
+                return BadRequest(ex.Message);
             }
 
         }
