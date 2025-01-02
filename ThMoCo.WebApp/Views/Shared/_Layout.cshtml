@@ -30,11 +30,6 @@
                         @if (User.Identity.IsAuthenticated)
                         {
 
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
-                            </li>
-     
-
                             @if (User.Claims.Any(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role" && c.Value == "admin"))
                             {
                                 <li class="nav-item">
@@ -62,14 +57,12 @@
                         {
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Profile">
-                                    @{
-                                        var profilePicture = User.Claims.FirstOrDefault(c => c.Type == "picture")?.Value ?? "/images/default-profile.png";
-                                    }
 
-                                    <img src="@profilePicture"
-                                         alt="@profilePicture"
+                                    <img src="/images/default-profile.png"
+                                         alt="Default User Photo"
                                          class="rounded-circle"
                                          style="width: 30px; height: 30px;">
+
                                 </a>
                             </li>
 
@@ -99,3 +92,6 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+
+

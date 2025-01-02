@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ThMoCo.WebApp.Models.ProductDTO>
+﻿@model HomeViewModel
 
 @{
     ViewData["Title"] = "Products";
@@ -31,7 +31,7 @@
         <label class="input-group-text" for="categorySelect">Category</label>
         <select class="form-select" id="categorySelect" name="category" onchange="submitForm()">
             <option value="">All Categories</option>
-            @foreach (var cat in categories)
+            @foreach (var cat in Model.Categories)
             {
                 var selected = (cat == currentCategory) ? "selected" : "";
                 @if (cat == currentCategory)
@@ -77,7 +77,7 @@
 
 
 <!-- Products Table -->
-@if (!Model.Any())
+@if (!Model.Products.Any())
 {
     <div class="alert alert-warning text-center">
         No products found.
@@ -94,7 +94,7 @@ else
         <a asp-action="CallProtectedAdminApi">Call the CallProtectedAdminApi API</a>
     </p>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-5 g-4">
-        @foreach (var product in Model)
+        @foreach (var product in Model.Products)
         {
             @await Html.PartialAsync("_ProductCard", product)
         }

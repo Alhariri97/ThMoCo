@@ -1,0 +1,30 @@
+﻿@model dynamic
+
+
+<!-- PAYMENT CARD FORM -->
+<h3>Set Payment Card</h3>
+<form asp-controller="Account" asp-action="SavePaymentCard" method="post">
+    <div class="form-group">
+        <label for="CardNumber">Card Number</label>
+        <input type="text" class="form-control" id="CardNumber" name="CardNumber" value="@Model.CardNumber" />
+    </div>
+    <div class="form-group">
+        <label for="CardHolderName">Card Holder Name</label>
+        <input type="text" class="form-control" id="CardHolderName" name="CardHolderName" value="@Model.CardHolderName" />
+    </div>
+    <div class="form-group">
+        <label for="ExpiryDate">Expiry Date (MM/YY)</label>
+        <input type="text" class="form-control" id="ExpiryDate" name="ExpiryDate" value="@Model.ExpiryDate" />
+    </div>
+    <div class="form-group">
+        <label for="Cvv">CVV</label>
+        <input type="password" class="form-control" value="@Model.Cvv" id="Cvv" name="Cvv" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Payment Card</button>
+    <a href="/profile" class="btn btn-secondary">Cancel</a>
+
+</form>
+
+<hr />
+
