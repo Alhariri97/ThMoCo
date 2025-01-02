@@ -339,7 +339,7 @@ public class ProfileController : ControllerBase
 
             if (addFundsDto.Cvv.ToString() != paymentCard.Cvv)
             {
-                return BadRequest("Wrong Cvv.");
+                return StatusCode(400, "Wrong Cvv.");
             }
 
 
