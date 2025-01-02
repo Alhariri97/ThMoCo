@@ -270,6 +270,25 @@ namespace ThMoCo.WebApp.Controllers
         }
 
 
+        [HttpPost("profile/AddFunds")]
+        public async Task<IActionResult> AddFunds([FromBody] AddFundsDTO fund)
+        {
+            try
+            {
+                var paymentCard = await _profileService.AddFund(fund);
+
+                return Ok(new { message = "Funds added successfully." });
+
+            }
+            catch (Exception ex)
+            {
+                return NotFound("Error Adding Funds.");
+            }
+
+        }
+
+
+
         //private ClaimsPrincipal AddOrUpdatePhotoUrlClaim(ClaimsPrincipal userPrincipal, string photoUrl)
         //{
         //    if (userPrincipal == null || string.IsNullOrEmpty(photoUrl))
@@ -296,3 +315,5 @@ namespace ThMoCo.WebApp.Controllers
 
 
 }
+
+
