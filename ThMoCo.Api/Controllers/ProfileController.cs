@@ -295,6 +295,102 @@ public class ProfileController : ControllerBase
 
     }
 
+
+
+
+
+
+
+
+
+
+    [HttpPost("addfunds")]
+    public async Task<ActionResult> AddFunds([FromBody] AddFundsDTO addFundsDto)
+    {
+        if (addFundsDto == null || addFundsDto.Amount <= 0)
+        {
+            return BadRequest("Invalid fund amount.");
+        }
+
+        try
+        {
+            var userId = GetCurrentUserId();
+
+            // Retrieve the existing user by Auth ID
+            var existingUser = _profileService.GetUserByAuthIdAsync(userId);
+
+            if (existingUser == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            // Check if the user has a payment card
+            var paymentCard = _profileService.GetPaymentCard(userId);
+            if (paymentCard == null ||
+                 string.IsNullOrWhiteSpace(paymentCard.CardNumber) ||
+                 string.IsNullOrWhiteSpace(paymentCard.CardHolderName) ||
+                 string.IsNullOrWhiteSpace(paymentCard.ExpiryDate) ||
+                 string.IsNullOrWhiteSpace(paymentCard.Cvv))
+            {
+                return BadRequest("Card info needs verifying: information is incomplete.");
+            }
+
+            // Validate CVV
+
+            if (addFundsDto.Cvv.ToString() != paymentCard.Cvv)
+            {
+                return BadRequest("Wrong Cvv.");
+            }
+
+
+
+            // Update the user's fund balance
+            existingUser.Fund = (existingUser.Fund ?? 0) + (double)addFundsDto.Amount;
+            existingUser.UpdatedAt = DateTime.UtcNow; // Update the timestamp
+
+            // Save changes to the database
+             var updatedUser = _profileService.UpdateUserAsync(existingUser);
+
+            return Ok(updatedUser);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error adding funds: {ex.Message}");
+            return StatusCode(500, $"Internal server error: {ex.Message}.");
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /// <summary>
     /// Helper method to retrieve the current user’s ID
     /// based on the NameIdentifier claim.
