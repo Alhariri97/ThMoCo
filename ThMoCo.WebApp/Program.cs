@@ -11,7 +11,10 @@ builder.Services.AddHttpClient<IProductService, ProductService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["Values:BaseAddress"]);
 });
-
+builder.Services.AddHttpClient<IProfileService, ProfileService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Values:BaseAddress"]);
+});
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddHttpClient();

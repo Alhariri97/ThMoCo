@@ -1,0 +1,28 @@
+﻿@model dynamic
+
+<hr />
+
+<!-- ADDRESS FORM -->
+<h3>Set Address</h3>
+<form asp-controller="Account" asp-action="SaveAddress" method="post">
+    <div class="form-group">
+        <label for="Street">Street</label>
+        <input type="text" class="form-control" id="Street" name="Street" value="@Model.Street" />
+    </div>
+    <div class="form-group">
+        <label for="City">City</label>
+        <input type="text" class="form-control" id="City" name="City" value="@Model.City" />
+    </div>
+    <div class="form-group">
+        <label for="State">State</label>
+        <input type="text" class="form-control" id="State" name="State" value="@Model.State" />
+    </div>
+    <div class="form-group">
+        <label for="PostalCode">Postal Code</label>
+        <input type="text" class="form-control" id="PostalCode" name="PostalCode" value="@Model.PostalCode" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Address</button>
+    <a href="/profile" class="btn btn-secondary">Cancel</a>
+
+</form>
