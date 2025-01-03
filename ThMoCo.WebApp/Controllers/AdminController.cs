@@ -43,8 +43,6 @@ public class AdminController : Controller
     public async Task<IActionResult> OrderProduct(int productId , int quantity)
     {
         var client = _httpClientFactory.CreateClient();
-        //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-
 
         // Fetch product details from the API
         var productResponse = await client.GetAsync($"http://undercutters.azurewebsites.net/api/product/{productId}");
@@ -80,10 +78,6 @@ public class AdminController : Controller
 
         ProductDTO newlyBoughtProduct = ConvertToProductDTO(product, quantity);
         var productDTOList = new List<ProductDTO> { newlyBoughtProduct };
-
-        //var accessToken = await HttpContext.GetTokenAsync("access_token");
-
-        //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
         _productService.UpdateProductCatalogAsync(productDTOList); 
         // Redirect back to Index after successfully placing an order

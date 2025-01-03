@@ -47,12 +47,6 @@ namespace ThMoCo.WebApp.Controllers
 
                 // Assume user.PhotoUrl contains the photo URL
                 var userPhotoFromDatabase = user.PhotoUrl;
-
-                // Use the helper method to add or update the PhotoUrl claim
-                //var updatedPrincipal = AddOrUpdatePhotoUrlClaim(User, userPhotoFromDatabase);
-
-                // Refresh the user's authentication context with the updated claims
-                //await HttpContext.SignInAsync(Auth0Constants.AuthenticationScheme, updatedPrincipal);
             }
         }
 
@@ -168,7 +162,6 @@ namespace ThMoCo.WebApp.Controllers
 
 
                 // Handle file upload if a new photo is provided
-                // Handle file upload if a new photo is provided
                 if (Photo != null && Photo.Length > 0)
                 {
                     var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
@@ -191,12 +184,6 @@ namespace ThMoCo.WebApp.Controllers
                     // Update photo URL
                     model.PhotoUrl = $"/uploads/{uniqueFileName}";
                     userInfo.PhotoUrl = model.PhotoUrl;
-
-                    // Update the user's claims with the new photo URL
-                    //var updatedPrincipal = AddOrUpdatePhotoUrlClaim(User, model.PhotoUrl);
-
-                    //// Refresh the authentication context with the Cookies scheme
-                    //await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, updatedPrincipal);
                 }
 
 
@@ -286,31 +273,6 @@ namespace ThMoCo.WebApp.Controllers
             }
 
         }
-
-
-
-        //private ClaimsPrincipal AddOrUpdatePhotoUrlClaim(ClaimsPrincipal userPrincipal, string photoUrl)
-        //{
-        //    if (userPrincipal == null || string.IsNullOrEmpty(photoUrl))
-        //    {
-        //        return userPrincipal; // No changes needed
-        //    }
-
-        //    var claims = userPrincipal.Claims.ToList();
-
-        //    // Add or update the PhotoUrl claim
-        //    var photoClaim = claims.FirstOrDefault(c => c.Type == "PhotoUrl");
-        //    if (photoClaim != null)
-        //    {
-        //        claims.Remove(photoClaim); // Remove existing claim if it exists
-        //    }
-        //    claims.Add(new Claim("PhotoUrl", photoUrl)); // Add the updated claim
-
-        //    // Recreate the ClaimsPrincipal with the updated claims
-        //    var claimsIdentity = new ClaimsIdentity(claims, userPrincipal.Identity?.AuthenticationType);
-        //    return new ClaimsPrincipal(claimsIdentity);
-        //}
-
     }
 
 
