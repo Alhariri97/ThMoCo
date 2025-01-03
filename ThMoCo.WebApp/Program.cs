@@ -2,7 +2,6 @@ using Auth0.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using ThMoCo.WebApp.Controllers;
-using ThMoCo.WebApp.Helper;
 using ThMoCo.WebApp.IServices;
 using ThMoCo.WebApp.Services;
 
