@@ -51,7 +51,7 @@ public class ProfileController : ControllerBase
                 IsEmailVerified = userDto.email_verified,
                 UpdatedAt = userDto.updated_at,
                 LastLogin = null,
-                Fund = 0.0, // Default fund value
+                Fund = 0.0m, // Default fund value
             };
 
             // Save the new user to the database
@@ -330,14 +330,14 @@ public class ProfileController : ControllerBase
                  string.IsNullOrWhiteSpace(paymentCard.CardNumber) ||
                  string.IsNullOrWhiteSpace(paymentCard.CardHolderName) ||
                  string.IsNullOrWhiteSpace(paymentCard.ExpiryDate) ||
-                 string.IsNullOrWhiteSpace(paymentCard.Cvv))
+                 paymentCard.Cvv == null)
             {
                 return BadRequest("Card info needs verifying: information is incomplete.");
             }
 
             // Validate CVV
 
-            if (addFundsDto.Cvv.ToString() != paymentCard.Cvv)
+            if (addFundsDto.Cvv != paymentCard.Cvv)
             {
                 return StatusCode(400, "Wrong Cvv.");
             }
@@ -345,7 +345,7 @@ public class ProfileController : ControllerBase
 
 
             // Update the user's fund balance
-            existingUser.Fund = (existingUser.Fund ?? 0) + (double)addFundsDto.Amount;
+            existingUser.Fund = (existingUser.Fund ?? 0) + addFundsDto.Amount;
             existingUser.UpdatedAt = DateTime.UtcNow; // Update the timestamp
 
             // Save changes to the database
