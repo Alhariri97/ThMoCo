@@ -62,12 +62,14 @@ public class OrderController : ControllerBase
     {
         var userId = GetCurrentUserId();
         var existingUser = _profileService.GetUserByAuthIdAsync(userId);
-        if ( existingUser.Id != id )
+
+        var order = await _orderService.GetOrderByIdAsync(id);
+
+        if ( existingUser.Id != order.ProfileId)
         {
             return BadRequest("User id is not same as the user's id in db");
         }
 
-        var order = await _orderService.GetOrderByIdAsync(id);
         if (order == null)
         {
             return NotFound($"Order with ID {id} not found.");
@@ -77,22 +79,37 @@ public class OrderController : ControllerBase
 
     // Create a new order
     [HttpPost]
+    [HttpPost]
     public async Task<ActionResult<Order>> CreateOrder([FromBody] OrderCreateRequest orderRequest)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
-        var userId = GetCurrentUserId();
-        var existingUser = _profileService.GetUserByAuthIdAsync(userId);
-        if(orderRequest.ProfileId != existingUser.Id)
-        {
-            return BadRequest("User id is not same as the user's id in db");
-        }
 
-        var order = await _orderService.CreateOrderAsync(orderRequest);
-        return CreatedAtAction(nameof(GetOrderById), new { id = order.Id }, order);
+        try
+        {
+            var userId = GetCurrentUserId();
+            var existingUser =  _profileService.GetUserByAuthIdAsync(userId);
+            if (existingUser == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            if (orderRequest.ProfileId != existingUser.Id)
+            {
+                return BadRequest("User ID mismatch.");
+            }
+
+            var order = await _orderService.CreateOrderAsync(orderRequest);
+            return CreatedAtAction(nameof(GetOrderById), new { id = order.Id }, order);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
+
 
     // Update an order
     [HttpPut("{id}")]

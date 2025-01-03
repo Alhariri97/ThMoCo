@@ -40,9 +40,12 @@ namespace ThMoCo.WebApp.Services
                 var httpClient = await CreateAuthenticatedClientAsync();
                 var response = await httpClient.GetAsync("/api/Profile/user");
                 response.EnsureSuccessStatusCode();
+                string json = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Received JSON: {json}"); // Debugging log
 
                 // Parse the returned JSON into an AppUserDTO
-                return await response.Content.ReadFromJsonAsync<AppUserDTO>();
+                var user = await response.Content.ReadFromJsonAsync<AppUserDTO>();
+                return user;
             }
             catch (Exception ex)
             {
@@ -62,11 +65,6 @@ namespace ThMoCo.WebApp.Services
             // Parse the returned JSON into an AppUserDTO
             return await response.Content.ReadFromJsonAsync<AppUserDTO>();
         }
-
-
-
-
-
 
 
 
