@@ -2,6 +2,7 @@
 
 public class OrderItem
 {
+    public int Id { get; set; }
     public int ProductId { get; set; } // The ID of the product
     public string ProductName { get; set; } // Name of the product
     public int Quantity { get; set; } // Number of this product being ordered

@@ -10,7 +10,7 @@ public class AppUserDTO
     public string? Email { get; set; }
     public string? PhotoUrl { get; set; }
     public string? PhoneNumber { get; set; }
-    public double? Fund { get; set; }
+    public decimal? Fund { get; set; }
     public DateTime? UpdatedAt { get; set; }
     public DateTime? LastLogin { get; set; }
     public string? Provider { get; set; } // e.g., "auth0", "google", "facebook"
@@ -22,7 +22,7 @@ public class AppUserDTO
 
     [JsonConstructor]
     public AppUserDTO(int id, string? name, string? email, string? photoUrl, string? phoneNumber,
-                  double? fund, DateTime? updatedAt, DateTime? lastLogin, string? provider, string? role, bool? isEmailVerified)
+                  decimal? fund, DateTime? updatedAt, DateTime? lastLogin, string? provider, string? role, bool? isEmailVerified)
     {
         Id = id;
         Name = name;

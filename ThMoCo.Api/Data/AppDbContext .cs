@@ -51,6 +51,15 @@ public class AppDbContext : DbContext
             new ProductDTO { Id = 9, Name = "Smartwatch", Price = 299.99m, Category = "Electronics", StockQuantity = 10, IsAvailable = true, ImageUrl = "http://example.com/smartwatch.jpg", CreatedDate = DateTime.Now.AddMonths(-7), UpdatedDate = DateTime.Now, Description = "A stylish smartwatch with health tracking features." },
             new ProductDTO { Id = 10, Name = "External Hard Drive", Price = 149.99m, Category = "Accessories", StockQuantity = 20, IsAvailable = true, ImageUrl = "http://example.com/harddrive.jpg", CreatedDate = DateTime.Now.AddMonths(-8), UpdatedDate = DateTime.Now, Description = "A 1TB external hard drive for backups and storage." }
         );
+
+
+        // Configure Order-OrderItem relationship
+        modelBuilder.Entity<Order>()
+            .HasMany(o => o.Items) // An Order has many OrderItems
+            .WithOne() // OrderItem belongs to one Order
+            .HasForeignKey(oi => oi.Id) // Define the foreign key in OrderItem
+            .OnDelete(DeleteBehavior.Cascade); // Cascade delete if an Order is deleted
+
     }
 }
 
