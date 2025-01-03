@@ -195,20 +195,6 @@ public class ProfileController : ControllerBase
             Console.Error.WriteLine($"Error: {ex.Message}");
             return StatusCode(500, $"Internal server error, Error:{ex.Message}.");
         }
-
-        try
-        {
-
-        }
-        catch (KeyNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            Console.Error.WriteLine($"Error: {ex.Message}");
-            return StatusCode(500, $"Internal server error, Error:{ex.Message}.");
-        }
     }
 
     /// <summary>
@@ -345,7 +331,7 @@ public class ProfileController : ControllerBase
 
 
             // Update the user's fund balance
-            existingUser.Fund = (existingUser.Fund ?? 0) + addFundsDto.Amount;
+            existingUser.Fund = (existingUser.Fund ??  0) + addFundsDto.Amount;
             existingUser.UpdatedAt = DateTime.UtcNow; // Update the timestamp
 
             // Save changes to the database

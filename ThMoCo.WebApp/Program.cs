@@ -15,8 +15,12 @@ builder.Services.AddHttpClient<IProfileService, ProfileService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["Values:BaseAddress"]);
 });
-builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpClient<IOrderService, OrderService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Values:BaseAddress"]);
+});
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
 builder.Services.AddHttpContextAccessor();
 
@@ -46,7 +50,20 @@ builder.Services.Configure<OpenIdConnectOptions>(Auth0Constants.AuthenticationSc
     options.SaveTokens = true; 
 
 });
-builder.Services.AddSingleton<CartService>();
+//builder.Services.AddSingleton<CartService>();
+// This needed for session management for using in the Cart.
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<CartService>();
+
+builder.Services.AddDistributedMemoryCache(); // Required for session
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 builder.Services.AddHttpClient<AdminController>();
 
 builder.Services.AddControllersWithViews();
@@ -65,6 +82,9 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// This needed for session management for using in the Cart.
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",

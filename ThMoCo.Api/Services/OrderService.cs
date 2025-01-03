@@ -26,9 +26,51 @@ namespace ThMoCo.Api.Services
 
         public async Task<Order> CreateOrderAsync(OrderCreateRequest orderRequest)
         {
+            var existingUser = await _context.AppUsers.FindAsync(orderRequest.ProfileId);
+            if (existingUser == null)
+            {
+                throw new Exception("User not found.");
+            }
+
+            if (existingUser.AddressId == null)
+            {
+                throw new Exception("No address found for the user.");
+            }
+
+            decimal orderTotal = orderRequest.Items.Sum(i => i.Quantity * i.PricePerUnit);
+
+            if (existingUser.Fund == null || existingUser.Fund < orderTotal)
+            {
+                throw new Exception("Insufficient funds to complete this purchase.");
+            }
+
+            foreach (var item in orderRequest.Items)
+            {
+                var product = await _context.Products.FindAsync(item.ProductId);
+                if (product == null)
+                {
+                    throw new Exception($"Product with ID {item.ProductId} does not exist.");
+                }
+                if (product.StockQuantity < item.Quantity)
+                {
+                    throw new Exception($"Not enough stock for product '{product.Name}'. Available: {product.StockQuantity}, Requested: {item.Quantity}.");
+                }
+            }
+
+            foreach (var item in orderRequest.Items)
+            {
+                var product = await _context.Products.FindAsync(item.ProductId);
+                product.StockQuantity -= item.Quantity;
+                _context.Products.Update(product);
+            }
+
+            existingUser.Fund -= orderTotal;
+            _context.AppUsers.Update(existingUser);
+
             var order = new Order
             {
                 ProfileId = orderRequest.ProfileId,
+                CreatedAt = DateTime.UtcNow,
                 Items = orderRequest.Items.Select(i => new OrderItem
                 {
                     ProductId = i.ProductId,
@@ -45,6 +87,7 @@ namespace ThMoCo.Api.Services
 
             return order;
         }
+
 
         public async Task<Order> UpdateOrderAsync(int id, OrderUpdateRequest orderRequest)
         {

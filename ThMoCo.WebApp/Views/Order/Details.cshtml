@@ -1,0 +1,38 @@
+﻿@model OrderDTO
+
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<h1>Order Details</h1>
+
+<div>
+    <h3>Order ID: @Model.Id</h3>
+    <p><strong>Number of Items:</strong> @Model.Items.Count</p>
+    <p><strong>Total Price:</strong> £@Model.Items.Sum(item => item.Quantity * item.PricePerUnit)</p>
+</div>
+
+<h4>Items</h4>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Quantity</th>
+            <th>Price Per Unit</th>
+            <th>Total Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Items)
+        {
+            <tr>
+                <td>@item.ProductName</td>
+                <td>@item.Quantity</td>
+                <td>£@item.PricePerUnit</td>
+                <td>£@(item.Quantity * item.PricePerUnit)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Index" class="btn btn-secondary">Back to Orders</a>

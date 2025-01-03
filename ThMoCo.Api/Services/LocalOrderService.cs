@@ -9,8 +9,10 @@ namespace ThMoCo.Api.Services
     {
         private readonly List<Order> _localOrders;
         private int _nextOrderId;
-
-        public LocalOrderService()
+        private readonly IProfileService _profileService;
+        private readonly IProductService _productService;
+        public LocalOrderService(IProfileService profileService,
+            IProductService productService)
         {
             _nextOrderId = 3; // Start with 3 as two orders are pre-populated
             _localOrders = new List<Order>
@@ -19,6 +21,7 @@ namespace ThMoCo.Api.Services
                 {
                     Id = 1,
                     ProfileId = 2,
+                    CreatedAt = DateTime.UtcNow,
                     Items = new List<OrderItem>
                     {
                         new OrderItem { ProductId = 1, ProductName = "Keyboard", Quantity = 2, PricePerUnit = 29.99m },
@@ -29,6 +32,7 @@ namespace ThMoCo.Api.Services
                 {
                     Id = 2,
                     ProfileId = 102,
+                    CreatedAt = DateTime.UtcNow,
                     Items = new List<OrderItem>
                     {
                         new OrderItem { ProductId = 3, ProductName = "Monitor", Quantity = 1, PricePerUnit = 199.99m },
@@ -41,6 +45,9 @@ namespace ThMoCo.Api.Services
             {
                 order.CalculateTotalAmount();
             }
+
+            _profileService = profileService;
+            _productService = productService;
         }
 
         public async Task<List<Order>> GetAllOrdersAsync()
@@ -56,10 +63,59 @@ namespace ThMoCo.Api.Services
 
         public async Task<Order> CreateOrderAsync(OrderCreateRequest orderRequest)
         {
+            // Fetch the user (Simulating the profile service)
+            var existingUser =  _profileService.GetUserByIdAsync(orderRequest.ProfileId);
+            if (existingUser == null)
+            {
+                throw new Exception("User not found.");
+            }
+
+            // Calculate total order amount
+            decimal orderTotal = orderRequest.Items.Sum(i => i.Quantity * i.PricePerUnit);
+
+            // Check if the user has sufficient funds
+            if (existingUser.Fund == null || existingUser.Fund < orderTotal)
+            {
+                throw new Exception("Insufficient funds to complete this purchase.");
+            }
+            // Check if the user has sufficient funds
+            if (existingUser.Address == null)
+            {
+                throw new Exception("No address found for the user.");
+            }
+
+            // Check product stock availability
+            foreach (var item in orderRequest.Items)
+            {
+                var product =  _productService.GetProductById(item.ProductId);
+                if (product == null)
+                {
+                    throw new Exception($"Product with ID {item.ProductId} does not exist.");
+                }
+                if (product.StockQuantity < item.Quantity)
+                {
+                    throw new Exception($"Not enough stock for product '{product.Name}'. Available: {product.StockQuantity}, Requested: {item.Quantity}.");
+                }
+            }
+
+            // Reduce stock for each purchased product
+            foreach (var item in orderRequest.Items)
+            {
+                var product =  _productService.GetProductById(item.ProductId);
+                product.StockQuantity -= item.Quantity;
+                await _productService.UpdateProduct(product);
+            }
+
+            // Deduct user funds
+            existingUser.Fund -= orderTotal;
+             _profileService.UpdateUserAsync(existingUser);
+
+            // Create the order
             var order = new Order
             {
                 Id = _nextOrderId++,
                 ProfileId = orderRequest.ProfileId,
+                CreatedAt = DateTime.UtcNow,
                 Items = orderRequest.Items.Select(i => new OrderItem
                 {
                     ProductId = i.ProductId,
@@ -70,10 +126,11 @@ namespace ThMoCo.Api.Services
             };
 
             order.CalculateTotalAmount();
-
             _localOrders.Add(order);
+
             return await Task.FromResult(order);
         }
+
 
         public async Task<Order> UpdateOrderAsync(int id, OrderUpdateRequest orderRequest)
         {

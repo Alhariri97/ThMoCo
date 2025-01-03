@@ -1,6 +1,6 @@
 ﻿namespace ThMoCo.WebApp.Models;
 
-public class OrderItemDto
+public class OrderItemDTO
 {
     public int ProductId { get; set; }
     public string ProductName { get; set; }

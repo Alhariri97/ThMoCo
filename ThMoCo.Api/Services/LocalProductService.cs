@@ -120,5 +120,50 @@ namespace ThMoCo.Api.Services
         {
             return _products.Select(p => p.Category).Distinct().ToList();
         }
+        public async Task<bool> UpdateProduct(ProductDTO updatedProduct)
+        {
+            if (updatedProduct == null)
+            {
+                throw new ArgumentNullException(nameof(updatedProduct), "Updated product cannot be null.");
+            }
+
+            if (updatedProduct.Id <= 0)
+            {
+                throw new ArgumentException("Invalid Product ID.");
+            }
+
+            if (updatedProduct.StockQuantity < 0)
+            {
+                updatedProduct.StockQuantity = 0; // Prevent negative stock
+            }
+
+            try
+            {
+                var existingProduct = _products.FirstOrDefault(p => p.Id == updatedProduct.Id);
+                if (existingProduct == null)
+                {
+                    return false; // Product not found
+                }
+
+                // Update product fields
+                existingProduct.Name = updatedProduct.Name;
+                existingProduct.Price = updatedProduct.Price;
+                existingProduct.Category = updatedProduct.Category;
+                existingProduct.StockQuantity = updatedProduct.StockQuantity;
+                existingProduct.IsAvailable = updatedProduct.IsAvailable;
+                existingProduct.Description = updatedProduct.Description;
+                existingProduct.UpdatedDate = DateTime.UtcNow;
+
+                await Task.CompletedTask;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating product: {ex.Message}");
+                return false;
+            }
+        }
+
+
     }
 }
