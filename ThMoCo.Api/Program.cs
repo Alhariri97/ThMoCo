@@ -63,48 +63,48 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 
-//// Configure services based on environment
-//if (builder.Environment.IsDevelopment())
-//{
-//    Console.WriteLine("Registering LocalProductService as IProductService");
-//    builder.Services.AddSingleton<IProductService, LocalProductService>();
-//    builder.Services.AddSingleton<IProfileService, LocalProfileService>();
-//    builder.Services.AddSingleton<IOrderService, LocalOrderService>();
-//}
-//else
-//{
-//    //    //Console.WriteLine("Registering ProductService as IProductService");
-//    //    //builder.Services.AddDbContext<ProductsContext>(options =>
-//    //    //{
-//    //    //    var cs = builder.Configuration.GetConnectionString("ConnectionString");
-//    //    //    options.UseSqlServer(cs);
-//    //    //});
-//    //    //builder.Services.AddScoped<IProductService, ProductService>();
-
-
-//    Console.WriteLine("Registering ProductService as IProductService");
-//    builder.Services.AddDbContext<AppDbContext>(options =>
-//    {
-//        var cs = builder.Configuration.GetConnectionString("ConnectionString");
-//        options.UseSqlServer(cs);
-//    });
-//    builder.Services.AddScoped<IProductService, ProductService>();
-//    builder.Services.AddScoped<IProfileService, ProfileService>();
-//    builder.Services.AddScoped<IOrderService, OrderService>();
-//}
-
-////////////////////////////////////
-Console.WriteLine("Registering ProductService as IProductService");
-builder.Services.AddDbContext<AppDbContext>(options =>
+// Configure services based on environment
+if (builder.Environment.IsDevelopment())
 {
-    var cs = builder.Configuration.GetConnectionString("ConnectionString");
-    options.UseSqlServer(cs);
-});
-builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<IProfileService, ProfileService>();
-builder.Services.AddScoped<IOrderService, OrderService>();
+    Console.WriteLine("Registering LocalProductService as IProductService");
+    builder.Services.AddSingleton<IProductService, LocalProductService>();
+    builder.Services.AddSingleton<IProfileService, LocalProfileService>();
+    builder.Services.AddSingleton<IOrderService, LocalOrderService>();
+}
+else
+{
+    //    //Console.WriteLine("Registering ProductService as IProductService");
+    //    //builder.Services.AddDbContext<ProductsContext>(options =>
+    //    //{
+    //    //    var cs = builder.Configuration.GetConnectionString("ConnectionString");
+    //    //    options.UseSqlServer(cs);
+    //    //});
+    //    //builder.Services.AddScoped<IProductService, ProductService>();
 
-////////////////////////////////////////
+
+    Console.WriteLine("Registering ProductService as IProductService");
+    builder.Services.AddDbContext<AppDbContext>(options =>
+    {
+        var cs = builder.Configuration.GetConnectionString("ConnectionString");
+        options.UseSqlServer(cs);
+    });
+    builder.Services.AddScoped<IProductService, ProductService>();
+    builder.Services.AddScoped<IProfileService, ProfileService>();
+    builder.Services.AddScoped<IOrderService, OrderService>();
+}
+
+//////////////////////////////////////
+//Console.WriteLine("Registering ProductService as IProductService");
+//builder.Services.AddDbContext<AppDbContext>(options =>
+//{
+//    var cs = builder.Configuration.GetConnectionString("ConnectionString");
+//    options.UseSqlServer(cs);
+//});
+//builder.Services.AddScoped<IProductService, ProductService>();
+//builder.Services.AddScoped<IProfileService, ProfileService>();
+//builder.Services.AddScoped<IOrderService, OrderService>();
+
+//////////////////////////////////////////
 
 
 var app = builder.Build();
