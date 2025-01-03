@@ -6,7 +6,7 @@ using ThMoCo.Api.IServices;
 
 namespace ThMoCo.Api.Controllers;
 
-//[Authorize]
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class OrderController : ControllerBase
