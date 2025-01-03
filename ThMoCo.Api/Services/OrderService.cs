@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
 using ThMoCo.Api.Data;
 using ThMoCo.Api.DTO;
 using ThMoCo.Api.IServices;
@@ -8,10 +9,12 @@ namespace ThMoCo.Api.Services
     public class OrderService : IOrderService
     {
         private readonly AppDbContext _context;
+        private readonly IProfileService _profileService;
 
-        public OrderService(AppDbContext context)
+        public OrderService(AppDbContext context, IProfileService profileService)
         {
             _context = context;
+            _profileService = profileService;
         }
 
         public async Task<List<Order>> GetAllOrdersAsync()
@@ -21,7 +24,9 @@ namespace ThMoCo.Api.Services
 
         public async Task<Order> GetOrderByIdAsync(int id)
         {
-            return await Task.FromResult(_context.Orders.FirstOrDefault(o => o.Id == id));
+            var order = _context.Orders.Include(o => o.Items).FirstOrDefault(o => o.Id == id);
+            return order;
+
         }
 
         public async Task<Order> CreateOrderAsync(OrderCreateRequest orderRequest)
@@ -32,9 +37,15 @@ namespace ThMoCo.Api.Services
                 throw new Exception("User not found.");
             }
 
-            if (existingUser.AddressId == null)
+            var paymentCard = _profileService.GetPaymentCard(existingUser.UserAuthId);
+            var address = _profileService.GetAddress(existingUser.UserAuthId);
+            if (address == null)
             {
                 throw new Exception("No address found for the user.");
+            }
+            if (paymentCard == null)
+            {
+                throw new Exception("No Payment Card found for the user.");
             }
 
             decimal orderTotal = orderRequest.Items.Sum(i => i.Quantity * i.PricePerUnit);
@@ -44,6 +55,7 @@ namespace ThMoCo.Api.Services
                 throw new Exception("Insufficient funds to complete this purchase.");
             }
 
+            // Validate product stock
             foreach (var item in orderRequest.Items)
             {
                 var product = await _context.Products.FindAsync(item.ProductId);
@@ -57,6 +69,7 @@ namespace ThMoCo.Api.Services
                 }
             }
 
+            // Deduct stock
             foreach (var item in orderRequest.Items)
             {
                 var product = await _context.Products.FindAsync(item.ProductId);
@@ -64,29 +77,51 @@ namespace ThMoCo.Api.Services
                 _context.Products.Update(product);
             }
 
+            // Deduct funds
             existingUser.Fund -= orderTotal;
             _context.AppUsers.Update(existingUser);
 
+            // Create the order
             var order = new Order
             {
                 ProfileId = orderRequest.ProfileId,
-                CreatedAt = DateTime.UtcNow,
-                Items = orderRequest.Items.Select(i => new OrderItem
-                {
-                    ProductId = i.ProductId,
-                    ProductName = i.ProductName,
-                    Quantity = i.Quantity,
-                    PricePerUnit = i.PricePerUnit
-                }).ToList()
+                CreatedAt = DateTime.UtcNow
             };
 
+            // Attach OrderItems explicitly
+            foreach (var item in orderRequest.Items)
+            {
+                var orderItem = new OrderItem
+                {
+                    ProductId = item.ProductId,
+                    ProductName = item.ProductName,
+                    Quantity = item.Quantity,
+                    PricePerUnit = item.PricePerUnit
+                };
+
+                // Ensure EF Core tracks the new OrderItem
+                _context.Entry(orderItem).State = EntityState.Added;
+
+                order.Items.Add(orderItem);
+            }
+
+            // Calculate total
             order.CalculateTotalAmount();
 
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
+            // Save the order
+            try
+            {
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error while saving order: " + ex.Message, ex);
+            }
 
             return order;
         }
+
 
 
         public async Task<Order> UpdateOrderAsync(int id, OrderUpdateRequest orderRequest)
@@ -129,7 +164,7 @@ namespace ThMoCo.Api.Services
 
         public async Task<List<Order>> GetAllOrdersForUserAsync(int userId)
         {
-            var orders = _context.Orders.Where(o => o.ProfileId == userId).ToList();
+            var orders = _context.Orders.Include(o => o.Items).Where(o => o.ProfileId == userId).ToList();
             return orders;
         }
 
