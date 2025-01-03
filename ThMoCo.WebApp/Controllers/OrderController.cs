@@ -54,13 +54,7 @@ namespace ThMoCo.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(OrderCreateRequest model)
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    return View(model);
-            //}
 
-            //var createdOrder = await _orderService.CreateOrderAsync(model);
-            //return RedirectToAction(nameof(Index));
             // Get the current user's cart
             var cart =  model.Items;
 
@@ -97,14 +91,7 @@ namespace ThMoCo.WebApp.Controllers
                 }
             }
 
-            // Deduct funds and update product stock
-            //user.foun -= cartTotal;
-            //foreach (var item in cart)
-            //{
-            //    var product = await _productService.GetProductByIdAsync(item.Product.Id);
-            //    product.Stock -= item.Quantity;
-            //    await _productService.UpdateProductAsync(product);
-            //}
+
 
             // Create the order
             var order = new OrderCreateRequest

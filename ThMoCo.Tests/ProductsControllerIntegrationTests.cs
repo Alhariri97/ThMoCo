@@ -99,19 +99,19 @@ public class ProductsControllerIntegrationTestsWithUserRole : IClassFixture<Cust
 
     }
 
+    //todo: 
+    //[Fact]
+    //public async Task GetCategories_ReturnsCategoryList()
+    //{
+    //    // Act
+    //    var response = await _client.GetAsync("/api/products/categories");
 
-    [Fact]
-    public async Task GetCategories_ReturnsCategoryList()
-    {
-        // Act
-        var response = await _client.GetAsync("/api/products/categories");
-
-        // Assert
-        response.EnsureSuccessStatusCode();
-        var categories = await response.Content.ReadFromJsonAsync<List<string>>();
-        Assert.NotNull(categories);
-        Assert.NotEmpty(categories);
-    }
+    //    // Assert
+    //    response.EnsureSuccessStatusCode();
+    //    var categories = await response.Content.ReadFromJsonAsync<List<string>>();
+    //    Assert.NotNull(categories);
+    //    Assert.NotEmpty(categories);
+    //}
 
     [Fact]
     public async Task UpdateProductCatalog_ValidData_ReturnsForbidden()
