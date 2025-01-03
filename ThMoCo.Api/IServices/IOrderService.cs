@@ -8,7 +8,7 @@ namespace ThMoCo.Api.IServices;
 public interface IOrderService
 {
     Task<List<Order>> GetAllOrdersAsync();
-    Task<List<Order>> GetAllOrdersForUserAsync();
+    Task<List<Order>> GetAllOrdersForUserAsync(int userId);
     Task<Order> GetOrderByIdAsync(int id);
     Task<Order> CreateOrderAsync(OrderCreateRequest orderRequest);
     Task<Order> UpdateOrderAsync(int id, OrderUpdateRequest orderRequest);

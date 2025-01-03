@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
 using ThMoCo.Api.DTO;
 using ThMoCo.Api.IServices;
 
@@ -17,7 +18,7 @@ namespace ThMoCo.Api.Services
                 new Order
                 {
                     Id = 1,
-                    ProfileId = 101,
+                    ProfileId = 2,
                     Items = new List<OrderItem>
                     {
                         new OrderItem { ProductId = 1, ProductName = "Keyboard", Quantity = 2, PricePerUnit = 29.99m },
@@ -106,9 +107,9 @@ namespace ThMoCo.Api.Services
             return await Task.FromResult(true);
         }
 
-        public Task<List<Order>> GetAllOrdersForUserAsync()
+        public async Task<List<Order>> GetAllOrdersForUserAsync(int userId)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(_localOrders.Where(o => o.ProfileId == userId).ToList());
         }
     }
 }
