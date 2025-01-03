@@ -7,6 +7,6 @@ public class PaymentCard
     public string CardNumber { get; set; }     // In real-world scenarios, store securely or partially
     public string CardHolderName { get; set; }
     public string ExpiryDate { get; set; }     // e.g., MM/YY
-    public int Cvv { get; set; }
+    public string Cvv { get; set; }
 
 }

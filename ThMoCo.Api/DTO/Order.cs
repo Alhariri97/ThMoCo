@@ -7,6 +7,7 @@ public class Order
     public int ProfileId { get; set; } // The ID of the user placing the order
     public List<OrderItem> Items { get; set; } = new List<OrderItem>(); // List of products in the order
     public decimal TotalAmount { get; set; } // Total cost of the order
+    public DateTime CreatedAt { get; set; }
 
     public void CalculateTotalAmount()
     {

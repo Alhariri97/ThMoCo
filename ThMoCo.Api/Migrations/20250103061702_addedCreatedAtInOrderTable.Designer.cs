@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ThMoCo.Api.Data;
 
 #nullable disable
 
-namespace ThMoCo.Api.Data.Migrations
+namespace ThMoCo.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250103061702_addedCreatedAtInOrderTable")]
+    partial class addedCreatedAtInOrderTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -176,9 +179,8 @@ namespace ThMoCo.Api.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Cvv")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Cvv")
+                        .HasColumnType("int");
 
                     b.Property<string>("ExpiryDate")
                         .IsRequired()
@@ -254,131 +256,131 @@ namespace ThMoCo.Api.Data.Migrations
                         {
                             Id = 1,
                             Category = "Electronics",
-                            CreatedDate = new DateTime(2024, 7, 3, 11, 31, 55, 325, DateTimeKind.Local).AddTicks(5093),
+                            CreatedDate = new DateTime(2024, 7, 3, 6, 17, 1, 585, DateTimeKind.Local).AddTicks(3296),
                             Description = "A high-performance laptop for work and gaming.",
                             ImageUrl = "http://example.com/laptop.jpg",
                             IsAvailable = true,
                             Name = "Laptop",
                             Price = 999.99m,
                             StockQuantity = 10,
-                            UpdatedDate = new DateTime(2025, 1, 3, 11, 31, 55, 325, DateTimeKind.Local).AddTicks(5155)
+                            UpdatedDate = new DateTime(2025, 1, 3, 6, 17, 1, 585, DateTimeKind.Local).AddTicks(3370)
                         },
                         new
                         {
                             Id = 2,
                             Category = "Electronics",
-                            CreatedDate = new DateTime(2024, 10, 3, 11, 31, 55, 325, DateTimeKind.Local).AddTicks(5159),
+                            CreatedDate = new DateTime(2024, 10, 3, 6, 17, 1, 585, DateTimeKind.Local).AddTicks(3377),
                             Description = "A modern smartphone with excellent camera quality.",
                             ImageUrl = "http://example.com/smartphone.jpg",
                             IsAvailable = true,
                             Name = "Smartphone",
                             Price = 799.99m,
                             StockQuantity = 20,
-                            UpdatedDate = new DateTime(2025, 1, 3, 11, 31, 55, 325, DateTimeKind.Local).AddTicks(5161)
+                            UpdatedDate = new DateTime(2025, 1, 3, 6, 17, 1, 585, DateTimeKind.Local).AddTicks(3381)
                         },
                         new
                         {
                             Id = 3,
                             Category = "Accessories",
-                            CreatedDate = new DateTime(2024, 12, 3, 11, 31, 55, 325, DateTimeKind.Local).AddTicks(5165),
+                            CreatedDate = new DateTime(2024, 12, 3, 6, 17, 1, 585, DateTimeKind.Local).AddTicks(3387),
                             Description = "Noise-canceling headphones for immersive sound.",
                             ImageUrl = "http://example.com/headphones.jpg",
                             IsAvailable = true,
                             Name = "Headphones",
                             Price = 199.99m,
                             StockQuantity = 50,
-                            UpdatedDate = new DateTime(2025, 1, 3, 11, 31, 55, 325, DateTimeKind.Local).AddTicks(5166)
+                            UpdatedDate = new DateTime(2025, 1, 3, 6, 17, 1, 585, DateTimeKind.Local).AddTicks(3390)
                         },
                         new
                         {
                             Id = 4,
                             Category = "Electronics",
-                            CreatedDate = new DateTime(2024, 11, 3, 11, 31, 55, 325, DateTimeKind.Local).AddTicks(5169),
+                            CreatedDate = new DateTime(2024, 11, 3, 6, 17, 1, 585, DateTimeKind.Local).AddTicks(3394),
                             Description = "A 24-inch monitor with stunning picture quality.",
                             ImageUrl = "http://example.com/monitor.jpg",
                             IsAvailable = true,
                             Name = "Monitor",
                             Price = 299.99m,
                             StockQuantity = 5,
-                            UpdatedDate = new DateTime(2025, 1, 3, 11, 31, 55, 325, DateTimeKind.Local).AddTicks(5170)
+                            UpdatedDate = new DateTime(2025, 1, 3, 6, 17, 1, 585, DateTimeKind.Local).AddTicks(3397)
                         },
                         new
                         {
                             Id = 5,
                             Category = "Electronics",
-                            CreatedDate = new DateTime(2024, 8, 3, 11, 31, 55, 325, DateTimeKind.Local).AddTicks(5172),
+                            CreatedDate = new DateTime(2024, 8, 3, 6, 17, 1, 585, DateTimeKind.Local).AddTicks(3401),
                             Description = "A lightweight tablet, perfect for reading and browsing.",
                             ImageUrl = "http://example.com/tablet.jpg",
                             IsAvailable = true,
                             Name = "Tablet",
                             Price = 499.99m,
                             StockQuantity = 15,
-                            UpdatedDate = new DateTime(2025, 1, 3, 11, 31, 55, 325, DateTimeKind.Local).AddTicks(5174)
+                            UpdatedDate = new DateTime(2025, 1, 3, 6, 17, 1, 585, DateTimeKind.Local).AddTicks(3404)
                         },
                         new
                         {
                             Id = 6,
                             Category = "Furniture",
-                            CreatedDate = new DateTime(2024, 9, 3, 11, 31, 55, 325, DateTimeKind.Local).AddTicks(5176),
+                            CreatedDate = new DateTime(2024, 9, 3, 6, 17, 1, 585, DateTimeKind.Local).AddTicks(3408),
                             Description = "Ergonomic gaming chair for extended comfort.",
                             ImageUrl = "http://example.com/gamingchair.jpg",
                             IsAvailable = true,
                             Name = "Gaming Chair",
                             Price = 199.99m,
                             StockQuantity = 25,
-                            UpdatedDate = new DateTime(2025, 1, 3, 11, 31, 55, 325, DateTimeKind.Local).AddTicks(5177)
+                            UpdatedDate = new DateTime(2025, 1, 3, 6, 17, 1, 585, DateTimeKind.Local).AddTicks(3411)
                         },
                         new
                         {
                             Id = 7,
                             Category = "Accessories",
-                            CreatedDate = new DateTime(2024, 7, 3, 11, 31, 55, 325, DateTimeKind.Local).AddTicks(5180),
+                            CreatedDate = new DateTime(2024, 7, 3, 6, 17, 1, 585, DateTimeKind.Local).AddTicks(3415),
                             Description = "Mechanical keyboard with customizable RGB lighting.",
                             ImageUrl = "http://example.com/keyboard.jpg",
                             IsAvailable = true,
                             Name = "Keyboard",
                             Price = 89.99m,
                             StockQuantity = 30,
-                            UpdatedDate = new DateTime(2025, 1, 3, 11, 31, 55, 325, DateTimeKind.Local).AddTicks(5181)
+                            UpdatedDate = new DateTime(2025, 1, 3, 6, 17, 1, 585, DateTimeKind.Local).AddTicks(3418)
                         },
                         new
                         {
                             Id = 8,
                             Category = "Accessories",
-                            CreatedDate = new DateTime(2024, 11, 3, 11, 31, 55, 325, DateTimeKind.Local).AddTicks(5183),
+                            CreatedDate = new DateTime(2024, 11, 3, 6, 17, 1, 585, DateTimeKind.Local).AddTicks(3421),
                             Description = "A wireless mouse with high precision and long battery life.",
                             ImageUrl = "http://example.com/mouse.jpg",
                             IsAvailable = true,
                             Name = "Wireless Mouse",
                             Price = 49.99m,
                             StockQuantity = 40,
-                            UpdatedDate = new DateTime(2025, 1, 3, 11, 31, 55, 325, DateTimeKind.Local).AddTicks(5185)
+                            UpdatedDate = new DateTime(2025, 1, 3, 6, 17, 1, 585, DateTimeKind.Local).AddTicks(3424)
                         },
                         new
                         {
                             Id = 9,
                             Category = "Electronics",
-                            CreatedDate = new DateTime(2024, 6, 3, 11, 31, 55, 325, DateTimeKind.Local).AddTicks(5187),
+                            CreatedDate = new DateTime(2024, 6, 3, 6, 17, 1, 585, DateTimeKind.Local).AddTicks(3428),
                             Description = "A stylish smartwatch with health tracking features.",
                             ImageUrl = "http://example.com/smartwatch.jpg",
                             IsAvailable = true,
                             Name = "Smartwatch",
                             Price = 299.99m,
                             StockQuantity = 10,
-                            UpdatedDate = new DateTime(2025, 1, 3, 11, 31, 55, 325, DateTimeKind.Local).AddTicks(5188)
+                            UpdatedDate = new DateTime(2025, 1, 3, 6, 17, 1, 585, DateTimeKind.Local).AddTicks(3431)
                         },
                         new
                         {
                             Id = 10,
                             Category = "Accessories",
-                            CreatedDate = new DateTime(2024, 5, 3, 11, 31, 55, 325, DateTimeKind.Local).AddTicks(5191),
+                            CreatedDate = new DateTime(2024, 5, 3, 6, 17, 1, 585, DateTimeKind.Local).AddTicks(3435),
                             Description = "A 1TB external hard drive for backups and storage.",
                             ImageUrl = "http://example.com/harddrive.jpg",
                             IsAvailable = true,
                             Name = "External Hard Drive",
                             Price = 149.99m,
                             StockQuantity = 20,
-                            UpdatedDate = new DateTime(2025, 1, 3, 11, 31, 55, 325, DateTimeKind.Local).AddTicks(5192)
+                            UpdatedDate = new DateTime(2025, 1, 3, 6, 17, 1, 585, DateTimeKind.Local).AddTicks(3438)
                         });
                 });
 
