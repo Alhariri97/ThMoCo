@@ -25,17 +25,48 @@ public class OrderController : ControllerBase
     }
 
     // Get all orders
+    [Authorize(Roles = "admin")] // Only admins can get all orders for all users
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+    public async Task<ActionResult<IEnumerable<Order>>> GetAllOrders()
     {
         var orders = await _orderService.GetAllOrdersAsync();
         return Ok(orders);
     }
 
+    // Get all orders for a user.
+
+    [HttpGet("user/{id}")] // Adjust this route
+    public async Task<ActionResult<IEnumerable<Order>>> GetOrders(int id)
+    {
+        var userId = GetCurrentUserId();
+        var existingUser = _profileService.GetUserByAuthIdAsync(userId);
+
+        if (existingUser == null)
+        {
+            return NotFound("User not found.");
+        }
+        if (existingUser.Id != id )
+        {
+            return BadRequest("User Id does not match the db user's matches.");
+        }
+
+
+        var orders = await _orderService.GetAllOrdersForUserAsync(existingUser.Id);
+        return Ok(orders);
+    }
+
+
     // Get order by ID
     [HttpGet("{id}")]
     public async Task<ActionResult<Order>> GetOrderById(int id)
     {
+        var userId = GetCurrentUserId();
+        var existingUser = _profileService.GetUserByAuthIdAsync(userId);
+        if ( existingUser.Id != id )
+        {
+            return BadRequest("User id is not same as the user's id in db");
+        }
+
         var order = await _orderService.GetOrderByIdAsync(id);
         if (order == null)
         {
@@ -51,6 +82,12 @@ public class OrderController : ControllerBase
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
+        }
+        var userId = GetCurrentUserId();
+        var existingUser = _profileService.GetUserByAuthIdAsync(userId);
+        if(orderRequest.ProfileId != existingUser.Id)
+        {
+            return BadRequest("User id is not same as the user's id in db");
         }
 
         var order = await _orderService.CreateOrderAsync(orderRequest);
@@ -86,5 +123,35 @@ public class OrderController : ControllerBase
         }
 
         return NoContent();
+    }
+
+
+
+
+
+    /// <summary>
+    /// Helper method to retrieve the current user’s ID
+    /// based on the NameIdentifier claim.
+    /// </summary>
+    private string GetCurrentUserId()
+    {
+        try
+        {
+            // Attempt to retrieve the user ID claim
+            var userIdClaim = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"); // Use the 'sub' claim
+
+            // Validate the claim
+            if (userIdClaim == null || string.IsNullOrWhiteSpace(userIdClaim.Value))
+            {
+                throw new Exception("User ID claim is missing or invalid.");
+            }
+
+            return userIdClaim.Value;
+        }
+        catch (Exception ex)
+        {
+            // Log or handle the error if necessary
+            throw new Exception("Error extracting User ID from claims.", ex);
+        }
     }
 }

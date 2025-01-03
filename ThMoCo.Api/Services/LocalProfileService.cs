@@ -127,8 +127,20 @@ namespace ThMoCo.Api.Services
             {
                 throw new KeyNotFoundException("User not found.");
             }
+
             return user;
 
+        }
+
+        public AppUser GetUserByIdAsync(int userId)
+        {
+            var user = _users
+                      .FirstOrDefault(u => u.Id == userId);
+            if (user == null)
+            {
+                throw new KeyNotFoundException("User not found.");
+            }
+            return user;
         }
         public AppUser UpdateUserAsync(AppUser userDto)
         {
@@ -248,5 +260,7 @@ namespace ThMoCo.Api.Services
             }
             return addressDto;
         }
+
+
     }
 }

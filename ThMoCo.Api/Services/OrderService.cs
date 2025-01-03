@@ -84,9 +84,9 @@ namespace ThMoCo.Api.Services
             return true;
         }
 
-        public Task<List<Order>> GetAllOrdersForUserAsync()
+        public async Task<List<Order>> GetAllOrdersForUserAsync(int userId)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(_context.Orders.Where(o => o.ProfileId == userId).ToList());
         }
     }
 
