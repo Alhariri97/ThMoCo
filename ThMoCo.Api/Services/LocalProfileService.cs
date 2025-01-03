@@ -15,7 +15,7 @@ namespace ThMoCo.Api.Services
                 CardNumber = "1234 5678 9012 3456",
                 CardHolderName = "John Doe",
                 ExpiryDate = "12/25",
-                Cvv = "123"
+                Cvv = 123
             },
             new PaymentCard
             {
@@ -23,7 +23,7 @@ namespace ThMoCo.Api.Services
                 CardNumber = "9999 8888 7777 6666",
                 CardHolderName = "Jane Smith",
                 ExpiryDate = "01/26",
-                Cvv = "456"
+                Cvv = 123
             }
         };
 
@@ -61,7 +61,7 @@ namespace ThMoCo.Api.Services
                     CardNumber = "4111111111111111",
                     CardHolderName = "John Doe",
                     ExpiryDate = "12/24",
-                    Cvv = "123"
+                    Cvv =123
                 },
                 Address = new Address
                 {
@@ -78,7 +78,7 @@ namespace ThMoCo.Api.Services
                     Email = "john.doe@example.com",
                     UserAuthId = "wMO0z3baPdNSN7edWYKKc1M39gd3g9XE@clients",
                     PhoneNumber = "123-456-7890",
-                    Fund = 100.50,
+                    Fund = 100.50m,
                     UpdatedAt = DateTime.UtcNow,
                     LastLogin = DateTime.UtcNow.AddDays(-1),
                     Provider = "auth0",
@@ -89,7 +89,7 @@ namespace ThMoCo.Api.Services
                         CardNumber = "4111111111111111",
                         CardHolderName = "John Doe",
                         ExpiryDate = "12/24",
-                        Cvv = "123"
+                        Cvv = 123
                     },
                     Address = new Address
                     {
