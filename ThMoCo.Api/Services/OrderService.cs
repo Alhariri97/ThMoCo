@@ -129,8 +129,10 @@ namespace ThMoCo.Api.Services
 
         public async Task<List<Order>> GetAllOrdersForUserAsync(int userId)
         {
-            return await Task.FromResult(_context.Orders.Where(o => o.ProfileId == userId).ToList());
+            var orders = _context.Orders.Where(o => o.ProfileId == userId).ToList();
+            return orders;
         }
+
     }
 
 }
