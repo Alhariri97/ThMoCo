@@ -53,12 +53,31 @@ public class AppDbContext : DbContext
         );
 
 
-        // Configure Order-OrderItem relationship
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<OrderItem>()
+            .Property(oi => oi.Id)
+            .ValueGeneratedOnAdd(); // ✅ Ensures SQL Server manages IDENTITY
+
         modelBuilder.Entity<Order>()
-            .HasMany(o => o.Items) // An Order has many OrderItems
-            .WithOne() // OrderItem belongs to one Order
-            .HasForeignKey(oi => oi.Id) // Define the foreign key in OrderItem
-            .OnDelete(DeleteBehavior.Cascade); // Cascade delete if an Order is deleted
+            .HasMany(o => o.Items)
+            .WithOne()
+            .HasForeignKey(oi => oi.OrderId)
+            .OnDelete(DeleteBehavior.Restrict); // ✅ Avoids multiple cascade paths issue
+
+
+        // 🔹 Fix Decimal Precision for Monetary Values
+        modelBuilder.Entity<AppUser>()
+            .Property(u => u.Fund)
+            .HasColumnType("decimal(18,2)"); // ✅ Prevents truncation
+
+        modelBuilder.Entity<Order>()
+            .Property(o => o.TotalAmount)
+            .HasColumnType("decimal(18,2)"); // ✅ Ensures proper storage
+
+        modelBuilder.Entity<OrderItem>()
+            .Property(oi => oi.PricePerUnit)
+            .HasColumnType("decimal(18,2)"); // ✅ Fixes decimal precision issue
 
     }
 }
