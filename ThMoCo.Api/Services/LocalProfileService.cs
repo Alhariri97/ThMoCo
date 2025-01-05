@@ -19,7 +19,7 @@ namespace ThMoCo.Api.Services
             },
             new PaymentCard
             {
-                UserId = "test@clients",
+                UserId = "TestUser",
                 CardNumber = "9999 8888 7777 6666",
                 CardHolderName = "Jane Smith",
                 ExpiryDate = "01/26",
@@ -71,7 +71,7 @@ namespace ThMoCo.Api.Services
                     PostalCode = "10001"
                 }
             },
-                new AppUser
+                new AppUser // "TestUser"
                 {
                     Id = 1,
                     Name = "John Doe",
@@ -99,6 +99,27 @@ namespace ThMoCo.Api.Services
                         PostalCode = "10001"
                     }
                 },
+            new AppUser
+            {
+                Id = 2,
+                Name = "John Doe",
+                Email = "john.doe@example.com",
+                UserAuthId = "TestUser",
+                PaymentCard = new PaymentCard
+                {
+                    CardNumber = "4111111111111111",
+                    CardHolderName = "John Doe",
+                    ExpiryDate = "12/24",
+                    Cvv ="123"
+                },
+                Address = new Address
+                {
+                    Street = "123 Main Street",
+                    City = "New York",
+                    State = "NY",
+                    PostalCode = "10001"
+                }
+            },
 
         };
 
