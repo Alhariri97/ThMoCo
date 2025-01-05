@@ -10,10 +10,10 @@ namespace ThMoCo.Tests;
 /// To run the tests locally you need to set these vars in your local env useing the following comands: 
 /// owherie most of the tests will failes
 /// Run the following commands to add to your windows locall env:
-/// [System.Environment]::SetEnvironmentVariable("AUTH0_DOMAIN", "https://dev-VALUE.uk.auth0.com", "User")
-/// [System.Environment]::SetEnvironmentVariable("AUTH0_CLIENT_ID", "VALUE", "User")
-/// [System.Environment]::SetEnvironmentVariable("AUTH0_CLIENT_SECRET", "VALUE-P3", "User")
-/// [System.Environment]::SetEnvironmentVariable("AUTH0_AUDIENCE", "https://VALUE.net/", "User")
+/// [System.Environment]::SetEnvironmentVariable("AUTH0_DOMAIN_TEST", "https://dev-VALUE.uk.auth0.com", "User")
+/// [System.Environment]::SetEnvironmentVariable("AUTH0_CLIENT_ID_TEST", "VALUE", "User")
+/// [System.Environment]::SetEnvironmentVariable("AUTH0_CLIENT_SECRET_TEST", "VALUE-P3", "User")
+/// [System.Environment]::SetEnvironmentVariable("AUTH0_AUDIENCE_TEST", "https://VALUE.net/", "User")
 /// 
 /// </summary>
 /// <returns></returns>
@@ -22,10 +22,10 @@ namespace ThMoCo.Tests;
 
 public class Auth0TokenHelper
 {
-    private static readonly string Auth0Domain = Environment.GetEnvironmentVariable("AUTH0_DOMAIN");
-    private static readonly string ClientId = Environment.GetEnvironmentVariable("AUTH0_CLIENT_ID");
-    private static readonly string ClientSecret = Environment.GetEnvironmentVariable("AUTH0_CLIENT_SECRET");
-    private static readonly string Audience = Environment.GetEnvironmentVariable("AUTH0_AUDIENCE");
+    private static readonly string Auth0Domain = Environment.GetEnvironmentVariable("AUTH0_DOMAIN_TEST");
+    private static readonly string ClientId = Environment.GetEnvironmentVariable("AUTH0_CLIENT_ID_TEST");
+    private static readonly string ClientSecret = Environment.GetEnvironmentVariable("AUTH0_CLIENT_SECRET_TEST");
+    private static readonly string Audience = Environment.GetEnvironmentVariable("AUTH0_AUDIENCE_TEST");
 
     public static async Task<string> GetAuthTokenAsync()
     {
