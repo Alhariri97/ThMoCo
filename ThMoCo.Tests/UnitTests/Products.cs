@@ -7,13 +7,13 @@ using ThMoCo.Api.Controllers;
 using ThMoCo.Api.DTO;
 using ThMoCo.Api.IServices;
 
-namespace ThMoCo.Tests.Units;
-public class ProductsControllerUnitsTests
+namespace ThMoCo.Tests.UnitTests;
+public class Products
 {
     private readonly Mock<IProductService> _mockProductService;
     private readonly ProductsController _controller;
 
-    public ProductsControllerUnitsTests()
+    public Products()
     {
         _mockProductService = new Mock<IProductService>();
         _controller = new ProductsController(_mockProductService.Object);

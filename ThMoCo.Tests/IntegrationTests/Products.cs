@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using ThMoCo.Api.DTO;
 
 
-namespace ThMoCo.Tests.Intergration;
+namespace ThMoCo.Tests.IntegrationTests;
 
 
-public class ProductsControllerIntegrationTests : IClassFixture<CustomWebApplicationFactory<ThMoCo.Api.Program>>
+public class Products : IClassFixture<CustomWebApplicationFactory<Api.Program>>
 {
     private readonly HttpClient _clientWithoutAuth;
-    public ProductsControllerIntegrationTests(CustomWebApplicationFactory<ThMoCo.Api.Program> factory)
+    public Products(CustomWebApplicationFactory<Api.Program> factory)
     {
         _clientWithoutAuth = factory.CreateClient();
 
@@ -86,12 +86,12 @@ public class ProductsControllerIntegrationTests : IClassFixture<CustomWebApplica
     }
 }
 
-public class ProductsControllerIntegrationTestsWithUserRole : IClassFixture<CustomWebApplicationFactory<ThMoCo.Api.Program>>
+public class ProductsWithUserRole : IClassFixture<CustomWebApplicationFactory<Api.Program>>
 {
 
     private readonly HttpClient _client;
 
-    public ProductsControllerIntegrationTestsWithUserRole(CustomWebApplicationFactory<ThMoCo.Api.Program> factory)
+    public ProductsWithUserRole(CustomWebApplicationFactory<Api.Program> factory)
     {
         _client = factory.CreateClient();
         _client.DefaultRequestHeaders.Authorization =
@@ -130,11 +130,11 @@ public class ProductsControllerIntegrationTestsWithUserRole : IClassFixture<Cust
     }
 }
 
-public class ProductsControllerIntegrationTestsWithAdminRole : IClassFixture<CustomWebApplicationFactory<ThMoCo.Api.Program>>
+public class ProductsControllerIntegrationTestsWithAdminRole : IClassFixture<CustomWebApplicationFactory<Api.Program>>
 {
     private readonly HttpClient _client;
 
-    public ProductsControllerIntegrationTestsWithAdminRole(CustomWebApplicationFactory<ThMoCo.Api.Program> factory)
+    public ProductsControllerIntegrationTestsWithAdminRole(CustomWebApplicationFactory<Api.Program> factory)
     {
         _client = factory.CreateClient();
         _client.DefaultRequestHeaders.Authorization =

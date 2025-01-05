@@ -41,8 +41,8 @@ public class ProfileService : IProfileService
             throw new KeyNotFoundException("User not found.");
         }
         return user;
-
     }
+
 
     public AppUser GetUserByIdAsync(int userId)
     {
