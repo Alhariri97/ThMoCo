@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ThMoCo.Api.DTO;
 using ThMoCo.Api.IServices;
+using static System.Net.Mime.MediaTypeNames;
 
 
 namespace ThMoCo.Api.Controllers;
@@ -29,6 +30,9 @@ public class OrderController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Order>>> GetAllOrders()
     {
+        var userId = GetCurrentUserId();
+        if (userId == null) return Unauthorized();
+
         var orders = await _orderService.GetAllOrdersAsync();
         return Ok(orders);
     }
@@ -39,6 +43,7 @@ public class OrderController : ControllerBase
     public async Task<ActionResult<IEnumerable<Order>>> GetOrders(int id)
     {
         var userId = GetCurrentUserId();
+        if (userId == null) return Unauthorized();
         var existingUser = _profileService.GetUserByAuthIdAsync(userId);
 
         if (existingUser == null)
@@ -61,24 +66,24 @@ public class OrderController : ControllerBase
     public async Task<ActionResult<Order>> GetOrderById(int id)
     {
         var userId = GetCurrentUserId();
+        if (userId == null) return Unauthorized();
         var existingUser = _profileService.GetUserByAuthIdAsync(userId);
 
         var order = await _orderService.GetOrderByIdAsync(id);
-
-        if ( existingUser.Id != order.ProfileId)
-        {
-            return BadRequest("User id is not same as the user's id in db");
-        }
-
         if (order == null)
         {
-            return NotFound($"Order with ID {id} not found.");
+            return NotFound($"Order with ID {id} not found."); 
         }
+
+        if (existingUser.Id != order.ProfileId)
+        {
+            return BadRequest("User ID does not match the order owner.");
+        }
+
         return Ok(order);
     }
 
     // Create a new order
-    [HttpPost]
     [HttpPost]
     public async Task<ActionResult<Order>> CreateOrder([FromBody] OrderCreateRequest orderRequest)
     {
@@ -90,6 +95,7 @@ public class OrderController : ControllerBase
         try
         {
             var userId = GetCurrentUserId();
+
             var existingUser =  _profileService.GetUserByAuthIdAsync(userId);
             if (existingUser == null)
             {
@@ -115,6 +121,9 @@ public class OrderController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult<Order>> UpdateOrder(int id, [FromBody] OrderUpdateRequest orderRequest)
     {
+        var userId = GetCurrentUserId();
+        if (userId == null) return Unauthorized();
+
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
@@ -133,6 +142,26 @@ public class OrderController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteOrder(int id)
     {
+        var userId = GetCurrentUserId();
+
+        if (string.IsNullOrEmpty(userId))
+            return Unauthorized(); // Prevents NullReferenceException when calling _profileService
+
+        var existingUser = _profileService.GetUserByAuthIdAsync(userId);
+
+        if (existingUser == null)
+            return Unauthorized("User not found."); // Handle if user is not found
+
+        var order = await _orderService.GetOrderByIdAsync(id);
+
+        if (order == null)
+            return NotFound($"Order with ID {id} not found."); // Prevents accessing order.ProfileId
+
+        if (order.ProfileId != existingUser.Id)
+        {
+            return BadRequest("User ID mismatch.");
+        }
+
         var success = await _orderService.DeleteOrderAsync(id);
         if (!success)
         {
@@ -141,6 +170,7 @@ public class OrderController : ControllerBase
 
         return NoContent();
     }
+
 
 
 
@@ -160,7 +190,7 @@ public class OrderController : ControllerBase
             // Validate the claim
             if (userIdClaim == null || string.IsNullOrWhiteSpace(userIdClaim.Value))
             {
-                throw new Exception("User ID claim is missing or invalid.");
+                return null;
             }
 
             return userIdClaim.Value;
@@ -168,7 +198,40 @@ public class OrderController : ControllerBase
         catch (Exception ex)
         {
             // Log or handle the error if necessary
-            throw new Exception("Error extracting User ID from claims.", ex);
+            Console.WriteLine("Error extracting User ID from claims.", ex);
+            return null;
         }
     }
 }
+///YourSolution
+//  /YourApp(ASP.NET Core application)
+//    /Controllers
+//      OrdersController.cs
+//      ProductsController.cs
+//      ProfileController.cs
+//    /Services
+//      OrderService.cs
+//      ProductService.cs
+//      ProfileService.cs
+//    /Repositories
+//      OrderRepository.cs
+//      ProductRepository.cs
+//      ProfileRepository.cs
+//  /YourApp.Tests (Unit and Integration Test Project)
+//    /UnitTests
+//      /Controllers
+//        OrdersControllerTests.cs
+//        ProductsControllerTests.cs
+//        ProfileControllerTests.cs
+//      /Services
+//        OrderServiceTests.cs
+//        ProductServiceTests.cs
+//        ProfileServiceTests.cs
+//      /Repositories
+//        OrderRepositoryTests.cs
+//        ProductRepositoryTests.cs
+//        ProfileRepositoryTests.cs
+//    /IntegrationTests
+//      OrdersEndpointsTests.cs
+//      ProductsEndpointsTests.cs
+//      ProfileEndpointsTests.cs
