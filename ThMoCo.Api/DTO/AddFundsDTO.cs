@@ -3,6 +3,6 @@
 public class AddFundsDTO
 {
     public decimal Amount { get; set; }
-    public int Cvv { get; set; }
+    public string Cvv { get; set; }
 }
 

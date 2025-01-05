@@ -33,7 +33,15 @@ public class ProfileController : ControllerBase
         try
         {
             // Check if the user already exists
-            var existingUser =  _profileService.GetUserByAuthIdAsync(userDto.user_id);
+            AppUser existingUser = null;
+            try
+            {
+                existingUser =  _profileService.GetUserByAuthIdAsync(userDto.user_id);
+            }
+            catch (KeyNotFoundException)
+            {
+                // User not found, proceed with registration
+            }
 
             if (existingUser != null)
             {
@@ -55,26 +63,25 @@ public class ProfileController : ControllerBase
             };
 
             // Save the new user to the database
-            var createdUser = _profileService.AddUserAsync(newUser);
+            var createdUser =  _profileService.AddUserAsync(newUser);
 
             // Return the created user
-            return Ok();
+            return Ok(createdUser);
         }
         catch (Exception ex)
         {
-            // Log the exception
             Console.Error.WriteLine($"Error registering user: {ex.Message}");
-
             return StatusCode(500, "Internal server error.");
         }
     }
+
 
 
     /// <summary>
     /// Retrieves the current user
     /// </summary>
     /// 
-    
+
     [HttpGet("user")]
     public ActionResult<AppUserDTO> GetUser()
     {
@@ -159,13 +166,6 @@ public class ProfileController : ControllerBase
     }
 
 
-
-
-
-
-
-
-
     /// <summary>
     /// Retrieves the current user’s Payment Card (if any).
     /// </summary>
@@ -184,20 +184,6 @@ public class ProfileController : ControllerBase
 
             // In real world, mask the card or return a safe subset of data
             return Ok(cardDto);
-
-        }
-        catch (KeyNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            Console.Error.WriteLine($"Error: {ex.Message}");
-            return StatusCode(500, $"Internal server error, Error:{ex.Message}.");
-        }
-
-        try
-        {
 
         }
         catch (KeyNotFoundException ex)
@@ -297,13 +283,6 @@ public class ProfileController : ControllerBase
 
 
 
-
-
-
-
-
-
-
     [HttpPost("addfunds")]
     public async Task<ActionResult> AddFunds([FromBody] AddFundsDTO addFundsDto)
     {
@@ -315,12 +294,23 @@ public class ProfileController : ControllerBase
         try
         {
             var userId = GetCurrentUserId();
+            if(userId == null)
+            {
+                return new NotFoundObjectResult("User not found.");
+            }
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User is not authenticated.");
+            }
 
             // Retrieve the existing user by Auth ID
             var existingUser = _profileService.GetUserByAuthIdAsync(userId);
 
             if (existingUser == null)
             {
+                return new NotFoundObjectResult("User not found.");
+
                 return NotFound("User not found.");
             }
 
@@ -345,7 +335,7 @@ public class ProfileController : ControllerBase
 
 
             // Update the user's fund balance
-            existingUser.Fund = (existingUser.Fund ?? 0) + addFundsDto.Amount;
+            existingUser.Fund = (existingUser.Fund ??  0) + addFundsDto.Amount;
             existingUser.UpdatedAt = DateTime.UtcNow; // Update the timestamp
 
             // Save changes to the database
@@ -355,7 +345,7 @@ public class ProfileController : ControllerBase
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(ex.Message);
+            return new NotFoundObjectResult(ex.Message); // Ensures correct return type
         }
         catch (Exception ex)
         {
@@ -363,27 +353,6 @@ public class ProfileController : ControllerBase
             return StatusCode(500, $"Internal server error: {ex.Message}.");
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -399,15 +368,20 @@ public class ProfileController : ControllerBase
     {
         try
         {
+            if(User == null)
+            {
+                return null;
+            }
             // Attempt to retrieve the user ID claim
-            var userIdClaim = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"); // Use the 'sub' claim
+            var userIdClaim = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")
+                           ?? User.FindFirst(ClaimTypes.Name) // Fallback to "name" if nameidentifier is missing
+                           ?? User.FindFirst("sub"); // Some tokens use "sub" as the identifier
 
             // Validate the claim
             if (userIdClaim == null || string.IsNullOrWhiteSpace(userIdClaim.Value))
             {
-               throw new Exception("User ID claim is missing or invalid.");
+                return null;
             }
-
             return userIdClaim.Value;
         }
         catch (Exception ex)

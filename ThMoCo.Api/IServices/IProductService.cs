@@ -18,5 +18,7 @@ namespace ThMoCo.Api.IServices
 
         // Retrieves a list of distinct product categories
         List<string> GetProductCategories();
+        Task<bool> UpdateProduct(ProductDTO updatedProduct);
+
     }
 }

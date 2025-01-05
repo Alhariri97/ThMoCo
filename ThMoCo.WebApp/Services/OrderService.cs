@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using System.Net.Http.Headers;
 using ThMoCo.WebApp.IServices;
 using ThMoCo.WebApp.Models;
@@ -8,23 +9,23 @@ namespace ThMoCo.WebApp.Services;
 
 public class OrderService : IOrderService
 {
+    private readonly ISession _session;
+    private const string CartSessionKey = "Cart";
+    /// <summary>
+    /// 
+    /// </summary>
     private readonly HttpClient _httpClient;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    public OrderService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
+
+    public OrderService(HttpClient httpClient,
+        IHttpContextAccessor httpContextAccessor)
     {
         _httpContextAccessor = httpContextAccessor;
         _httpClient = httpClient;
+        _session = _httpContextAccessor.HttpContext.Session;
+
     }
-    private async Task<HttpClient> CreateAuthenticatedClientAsync()
-    {
-        // Retrieve the access token from the current HTTP context
-        var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync("access_token");
-        if (!string.IsNullOrEmpty(accessToken))
-        {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-        }
-        return _httpClient;
-    }
+
     public async Task<List<OrderDTO>> GetAllOrdersAsync()
     {
         try
@@ -58,15 +59,32 @@ public class OrderService : IOrderService
         try
         {
             var httpClient = await CreateAuthenticatedClientAsync();
-            var response = await httpClient.PutAsJsonAsync($"/api/order", orderRequest);
+
+            // Convert orderRequest to JSON content
+            var jsonContent = JsonContent.Create(orderRequest);
+
+            // Send HTTP POST request with JSON payload
+            var response = await httpClient.PostAsync("/api/order", jsonContent);
+
+            // Ensure the response is successful
             response.EnsureSuccessStatusCode();
+
+            _session.Remove(CartSessionKey);
+            // Deserialize the response content to OrderDTO
             return await response.Content.ReadFromJsonAsync<OrderDTO>();
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"HTTP Request failed: {ex.Message}");
+            throw;
         }
         catch (Exception ex)
         {
+            Console.WriteLine($"Unexpected error: {ex.Message}");
+            throw;
         }
-        throw new NotImplementedException();
     }
+
     public async Task<OrderDTO> UpdateOrderAsync(int id, OrderUpdateRequest orderRequest)
     {
         try
@@ -94,5 +112,27 @@ public class OrderService : IOrderService
         {
         }
         throw new NotImplementedException();
+    }
+
+    public async Task<List<OrderDTO>> GetAllOrdersForUserAsync(int userId)
+    {
+        var httpClient = await CreateAuthenticatedClientAsync();
+        var response = await httpClient.GetAsync($"/api/Order/user/{userId}");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<List<OrderDTO>>();
+
+        throw new NotImplementedException();
+    }
+
+
+    private async Task<HttpClient> CreateAuthenticatedClientAsync()
+    {
+        // Retrieve the access token from the current HTTP context
+        var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync("access_token");
+        if (!string.IsNullOrEmpty(accessToken))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        }
+        return _httpClient;
     }
 }
