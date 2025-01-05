@@ -1,4 +1,9 @@
 ﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace ThMoCo.Tests;
 
@@ -33,6 +38,8 @@ public class Auth0TokenHelper
             throw new Exception("Missing Auth0 environment variables.");
         }
 
+    public static async Task<string> GetAuthTokenAsync()
+    {
         using var client = new HttpClient();
 
         var requestBody = new Dictionary<string, string>
@@ -64,4 +71,5 @@ public class Auth0TokenHelper
         [JsonProperty("access_token")]
         public string AccessToken { get; set; }
     }
+
 }
