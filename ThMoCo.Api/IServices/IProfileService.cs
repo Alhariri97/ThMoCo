@@ -6,6 +6,8 @@ public interface IProfileService
 {
     AppUser AddUserAsync(AppUser user);
     AppUser GetUserByAuthIdAsync(string userAuthId);
+    AppUser GetUserByIdAsync(int userId);
+
     AppUser UpdateUserAsync(AppUser user);
 
 

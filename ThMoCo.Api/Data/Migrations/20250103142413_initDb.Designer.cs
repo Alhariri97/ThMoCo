@@ -9,11 +9,11 @@ using ThMoCo.Api.Data;
 
 #nullable disable
 
-namespace ThMoCo.Api.Migrations
+namespace ThMoCo.Api.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250103014056_AddedOrdersTable")]
-    partial class AddedOrdersTable
+    [Migration("20250103142413_initDb")]
+    partial class initDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -126,6 +126,9 @@ namespace ThMoCo.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("ProfileId")
                         .HasColumnType("int");
 
@@ -140,6 +143,12 @@ namespace ThMoCo.Api.Migrations
             modelBuilder.Entity("ThMoCo.Api.DTO.OrderItem", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("PricePerUnit")
@@ -156,6 +165,8 @@ namespace ThMoCo.Api.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
 
                     b.ToTable("OrderItem");
                 });
@@ -176,8 +187,9 @@ namespace ThMoCo.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Cvv")
-                        .HasColumnType("int");
+                    b.Property<string>("Cvv")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ExpiryDate")
                         .IsRequired()
@@ -253,131 +265,131 @@ namespace ThMoCo.Api.Migrations
                         {
                             Id = 1,
                             Category = "Electronics",
-                            CreatedDate = new DateTime(2024, 7, 3, 1, 40, 55, 804, DateTimeKind.Local).AddTicks(6467),
+                            CreatedDate = new DateTime(2024, 7, 3, 14, 24, 12, 929, DateTimeKind.Local).AddTicks(4019),
                             Description = "A high-performance laptop for work and gaming.",
                             ImageUrl = "http://example.com/laptop.jpg",
                             IsAvailable = true,
                             Name = "Laptop",
                             Price = 999.99m,
                             StockQuantity = 10,
-                            UpdatedDate = new DateTime(2025, 1, 3, 1, 40, 55, 804, DateTimeKind.Local).AddTicks(6524)
+                            UpdatedDate = new DateTime(2025, 1, 3, 14, 24, 12, 929, DateTimeKind.Local).AddTicks(4104)
                         },
                         new
                         {
                             Id = 2,
                             Category = "Electronics",
-                            CreatedDate = new DateTime(2024, 10, 3, 1, 40, 55, 804, DateTimeKind.Local).AddTicks(6528),
+                            CreatedDate = new DateTime(2024, 10, 3, 14, 24, 12, 929, DateTimeKind.Local).AddTicks(4109),
                             Description = "A modern smartphone with excellent camera quality.",
                             ImageUrl = "http://example.com/smartphone.jpg",
                             IsAvailable = true,
                             Name = "Smartphone",
                             Price = 799.99m,
                             StockQuantity = 20,
-                            UpdatedDate = new DateTime(2025, 1, 3, 1, 40, 55, 804, DateTimeKind.Local).AddTicks(6529)
+                            UpdatedDate = new DateTime(2025, 1, 3, 14, 24, 12, 929, DateTimeKind.Local).AddTicks(4111)
                         },
                         new
                         {
                             Id = 3,
                             Category = "Accessories",
-                            CreatedDate = new DateTime(2024, 12, 3, 1, 40, 55, 804, DateTimeKind.Local).AddTicks(6533),
+                            CreatedDate = new DateTime(2024, 12, 3, 14, 24, 12, 929, DateTimeKind.Local).AddTicks(4114),
                             Description = "Noise-canceling headphones for immersive sound.",
                             ImageUrl = "http://example.com/headphones.jpg",
                             IsAvailable = true,
                             Name = "Headphones",
                             Price = 199.99m,
                             StockQuantity = 50,
-                            UpdatedDate = new DateTime(2025, 1, 3, 1, 40, 55, 804, DateTimeKind.Local).AddTicks(6535)
+                            UpdatedDate = new DateTime(2025, 1, 3, 14, 24, 12, 929, DateTimeKind.Local).AddTicks(4116)
                         },
                         new
                         {
                             Id = 4,
                             Category = "Electronics",
-                            CreatedDate = new DateTime(2024, 11, 3, 1, 40, 55, 804, DateTimeKind.Local).AddTicks(6537),
+                            CreatedDate = new DateTime(2024, 11, 3, 14, 24, 12, 929, DateTimeKind.Local).AddTicks(4119),
                             Description = "A 24-inch monitor with stunning picture quality.",
                             ImageUrl = "http://example.com/monitor.jpg",
                             IsAvailable = true,
                             Name = "Monitor",
                             Price = 299.99m,
                             StockQuantity = 5,
-                            UpdatedDate = new DateTime(2025, 1, 3, 1, 40, 55, 804, DateTimeKind.Local).AddTicks(6538)
+                            UpdatedDate = new DateTime(2025, 1, 3, 14, 24, 12, 929, DateTimeKind.Local).AddTicks(4121)
                         },
                         new
                         {
                             Id = 5,
                             Category = "Electronics",
-                            CreatedDate = new DateTime(2024, 8, 3, 1, 40, 55, 804, DateTimeKind.Local).AddTicks(6541),
+                            CreatedDate = new DateTime(2024, 8, 3, 14, 24, 12, 929, DateTimeKind.Local).AddTicks(4126),
                             Description = "A lightweight tablet, perfect for reading and browsing.",
                             ImageUrl = "http://example.com/tablet.jpg",
                             IsAvailable = true,
                             Name = "Tablet",
                             Price = 499.99m,
                             StockQuantity = 15,
-                            UpdatedDate = new DateTime(2025, 1, 3, 1, 40, 55, 804, DateTimeKind.Local).AddTicks(6542)
+                            UpdatedDate = new DateTime(2025, 1, 3, 14, 24, 12, 929, DateTimeKind.Local).AddTicks(4128)
                         },
                         new
                         {
                             Id = 6,
                             Category = "Furniture",
-                            CreatedDate = new DateTime(2024, 9, 3, 1, 40, 55, 804, DateTimeKind.Local).AddTicks(6544),
+                            CreatedDate = new DateTime(2024, 9, 3, 14, 24, 12, 929, DateTimeKind.Local).AddTicks(4131),
                             Description = "Ergonomic gaming chair for extended comfort.",
                             ImageUrl = "http://example.com/gamingchair.jpg",
                             IsAvailable = true,
                             Name = "Gaming Chair",
                             Price = 199.99m,
                             StockQuantity = 25,
-                            UpdatedDate = new DateTime(2025, 1, 3, 1, 40, 55, 804, DateTimeKind.Local).AddTicks(6545)
+                            UpdatedDate = new DateTime(2025, 1, 3, 14, 24, 12, 929, DateTimeKind.Local).AddTicks(4133)
                         },
                         new
                         {
                             Id = 7,
                             Category = "Accessories",
-                            CreatedDate = new DateTime(2024, 7, 3, 1, 40, 55, 804, DateTimeKind.Local).AddTicks(6548),
+                            CreatedDate = new DateTime(2024, 7, 3, 14, 24, 12, 929, DateTimeKind.Local).AddTicks(4136),
                             Description = "Mechanical keyboard with customizable RGB lighting.",
                             ImageUrl = "http://example.com/keyboard.jpg",
                             IsAvailable = true,
                             Name = "Keyboard",
                             Price = 89.99m,
                             StockQuantity = 30,
-                            UpdatedDate = new DateTime(2025, 1, 3, 1, 40, 55, 804, DateTimeKind.Local).AddTicks(6549)
+                            UpdatedDate = new DateTime(2025, 1, 3, 14, 24, 12, 929, DateTimeKind.Local).AddTicks(4137)
                         },
                         new
                         {
                             Id = 8,
                             Category = "Accessories",
-                            CreatedDate = new DateTime(2024, 11, 3, 1, 40, 55, 804, DateTimeKind.Local).AddTicks(6551),
+                            CreatedDate = new DateTime(2024, 11, 3, 14, 24, 12, 929, DateTimeKind.Local).AddTicks(4140),
                             Description = "A wireless mouse with high precision and long battery life.",
                             ImageUrl = "http://example.com/mouse.jpg",
                             IsAvailable = true,
                             Name = "Wireless Mouse",
                             Price = 49.99m,
                             StockQuantity = 40,
-                            UpdatedDate = new DateTime(2025, 1, 3, 1, 40, 55, 804, DateTimeKind.Local).AddTicks(6552)
+                            UpdatedDate = new DateTime(2025, 1, 3, 14, 24, 12, 929, DateTimeKind.Local).AddTicks(4142)
                         },
                         new
                         {
                             Id = 9,
                             Category = "Electronics",
-                            CreatedDate = new DateTime(2024, 6, 3, 1, 40, 55, 804, DateTimeKind.Local).AddTicks(6555),
+                            CreatedDate = new DateTime(2024, 6, 3, 14, 24, 12, 929, DateTimeKind.Local).AddTicks(4145),
                             Description = "A stylish smartwatch with health tracking features.",
                             ImageUrl = "http://example.com/smartwatch.jpg",
                             IsAvailable = true,
                             Name = "Smartwatch",
                             Price = 299.99m,
                             StockQuantity = 10,
-                            UpdatedDate = new DateTime(2025, 1, 3, 1, 40, 55, 804, DateTimeKind.Local).AddTicks(6556)
+                            UpdatedDate = new DateTime(2025, 1, 3, 14, 24, 12, 929, DateTimeKind.Local).AddTicks(4147)
                         },
                         new
                         {
                             Id = 10,
                             Category = "Accessories",
-                            CreatedDate = new DateTime(2024, 5, 3, 1, 40, 55, 804, DateTimeKind.Local).AddTicks(6558),
+                            CreatedDate = new DateTime(2024, 5, 3, 14, 24, 12, 929, DateTimeKind.Local).AddTicks(4150),
                             Description = "A 1TB external hard drive for backups and storage.",
                             ImageUrl = "http://example.com/harddrive.jpg",
                             IsAvailable = true,
                             Name = "External Hard Drive",
                             Price = 149.99m,
                             StockQuantity = 20,
-                            UpdatedDate = new DateTime(2025, 1, 3, 1, 40, 55, 804, DateTimeKind.Local).AddTicks(6559)
+                            UpdatedDate = new DateTime(2025, 1, 3, 14, 24, 12, 929, DateTimeKind.Local).AddTicks(4152)
                         });
                 });
 
@@ -400,8 +412,8 @@ namespace ThMoCo.Api.Migrations
                 {
                     b.HasOne("ThMoCo.Api.DTO.Order", null)
                         .WithMany("Items")
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 

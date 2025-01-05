@@ -31,7 +31,7 @@ public class ProfileService : IProfileService
     }
 
 
-    public AppUser GetUserByAuthIdAsync(string userAuthId)
+    public  AppUser GetUserByAuthIdAsync(string userAuthId)
     {
         var user = _dbContext.AppUsers
                   .FirstOrDefault(u => u.UserAuthId == userAuthId);
@@ -41,7 +41,18 @@ public class ProfileService : IProfileService
             throw new KeyNotFoundException("User not found.");
         }
         return user;
+    }
 
+
+    public AppUser GetUserByIdAsync(int userId)
+    {
+        var user = _dbContext.AppUsers
+                  .FirstOrDefault(u => u.Id == userId);
+        if (user == null)
+        {
+            throw new KeyNotFoundException("User not found.");
+        }
+        return user;
     }
     public AppUser? UpdateUserAsync(AppUser user)
     {

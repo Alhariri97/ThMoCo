@@ -2,4 +2,6 @@
 
 public class OrderUpdateRequest
 {
+    public List<OrderItemDTO> Items { get; set; }
+
 }
