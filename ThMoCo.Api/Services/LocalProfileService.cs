@@ -282,6 +282,31 @@ namespace ThMoCo.Api.Services
             return addressDto;
         }
 
+        public bool AnonymiseCustomerDataAsync(int userId)
+        {
+            var user = _users.FirstOrDefault(u => u.Id == userId);
+            if (user == null)
+            {
+                return false;
+            }
 
+            user.Name = "Anonymous";
+            user.Email = "anonymous@example.com";
+            user.PhoneNumber = null;
+            user.UserAuthId = null;
+            user.Fund = 0;
+            user.UpdatedAt = DateTime.UtcNow;
+            user.IsEmailVerified = false;
+            user.PaymentCard = null;
+            user.Address = null;
+
+            return true;
+        }
+
+        public List<AppUser> GetAllUsers()
+        {
+            var users = _users.ToList();
+            return users;
+        }
     }
 }

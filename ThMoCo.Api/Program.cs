@@ -70,6 +70,8 @@ if (builder.Environment.IsDevelopment())
     builder.Services.AddSingleton<IProductService, LocalProductService>();
     builder.Services.AddSingleton<IProfileService, LocalProfileService>();
     builder.Services.AddSingleton<IOrderService, LocalOrderService>();
+    builder.Services.AddSingleton<IAdminService, AdminService>();
+
 }
 else
 {
@@ -91,6 +93,7 @@ else
     builder.Services.AddScoped<IProductService, ProductService>();
     builder.Services.AddScoped<IProfileService, ProfileService>();
     builder.Services.AddScoped<IOrderService, OrderService>();
+    builder.Services.AddScoped<IAdminService, AdminService>();
 }
 
 //////////////////////////////////////
@@ -103,6 +106,7 @@ else
 //builder.Services.AddScoped<IProductService, ProductService>();
 //builder.Services.AddScoped<IProfileService, ProfileService>();
 //builder.Services.AddScoped<IOrderService, OrderService>();
+//builder.Services.AddScoped<IAdminService, AdminService>();
 
 //////////////////////////////////////////
 

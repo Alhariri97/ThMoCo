@@ -120,6 +120,33 @@ public class ProfileController : ControllerBase
 
         }
     }
+    [Authorize(Roles = "admin")]
+    [HttpGet("user/{id}")]
+    public ActionResult<AppUserDTO> GetUserById(string id)
+    {
+        try
+        {
+            var currentUserId = GetCurrentUserId();
+            var currentUser = _profileService.GetUserByAuthIdAsync(currentUserId);
+
+            var existingUser = _profileService.GetUserByAuthIdAsync(id);
+
+            if (existingUser == null)
+            {
+                return NotFound("No user found for the given ID.");
+            }
+
+            return Ok(existingUser);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}.");
+        }
+    }
 
     [Authorize]
     [HttpPut("user")]

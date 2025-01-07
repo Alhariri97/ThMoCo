@@ -190,5 +190,41 @@ public class ProfileService : IProfileService
         return addressDto;
     }
 
+    public bool AnonymiseCustomerDataAsync(int userId)
+    {
+        var user = _dbContext.AppUsers.FirstOrDefault(u => u.Id == userId);
+        if (user == null)
+        {
+            return false;
+        }
 
+        user.Name = "Anonymous";
+        user.Email = "anonymous@example.com";
+        user.PhoneNumber = null;
+        user.UserAuthId = null;
+        user.Fund = 0;
+        user.UpdatedAt = DateTime.UtcNow;
+        user.IsEmailVerified = false;
+
+        var userPaymentCard = _dbContext.PaymentCards.FirstOrDefault(pc => pc.UserId == userId.ToString());
+        if (userPaymentCard != null)
+        {
+            _dbContext.PaymentCards.Remove(userPaymentCard);
+        }
+
+        var userAddress = _dbContext.Addresses.FirstOrDefault(a => a.UserId == userId.ToString());
+        if (userAddress != null)
+        {
+            _dbContext.Addresses.Remove(userAddress);
+        }
+
+        _dbContext.SaveChanges();
+        return true;
+    }
+
+    public List<AppUser> GetAllUsers()
+    {
+        var users = _dbContext.AppUsers.ToList();
+        return users;
+    }
 }
