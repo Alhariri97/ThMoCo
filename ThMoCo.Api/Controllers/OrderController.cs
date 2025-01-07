@@ -10,7 +10,7 @@ namespace ThMoCo.Api.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class OrderController : ControllerBase
+public class OrderController : ControllerBase 
 {
     private readonly IOrderService _orderService;
     private readonly IProfileService _profileService;
@@ -116,27 +116,6 @@ public class OrderController : ControllerBase
         }
     }
 
-
-    // Update an order
-    [HttpPut("{id}")]
-    public async Task<ActionResult<Order>> UpdateOrder(int id, [FromBody] OrderUpdateRequest orderRequest)
-    {
-        var userId = GetCurrentUserId();
-        if (userId == null) return Unauthorized();
-
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        var updatedOrder = await _orderService.UpdateOrderAsync(id, orderRequest);
-        if (updatedOrder == null)
-        {
-            return NotFound($"Order with ID {id} not found.");
-        }
-
-        return Ok(updatedOrder);
-    }
 
     // Delete an order
     [HttpDelete("{id}")]
