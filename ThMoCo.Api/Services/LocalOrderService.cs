@@ -83,7 +83,10 @@ namespace ThMoCo.Api.Services
             {
                 throw new Exception("No address found for the user.");
             }
-
+            if (string.IsNullOrEmpty(existingUser.PhoneNumber))
+            {
+                throw new Exception("Phonw number must exist to complete this purchase.");
+            }
             // Check product stock availability
             foreach (var item in orderRequest.Items)
             {
@@ -167,6 +170,16 @@ namespace ThMoCo.Api.Services
         public async Task<List<Order>> GetAllOrdersForUserAsync(int userId)
         {
             return await Task.FromResult(_localOrders.Where(o => o.ProfileId == userId).ToList());
+        }
+
+        public async Task<Order> UpdateOrderAsync(int id, Order orderRequest)
+        {
+            var order = _localOrders.FirstOrDefault(o => o.Id == id);
+            order.DispatchDate = orderRequest.DispatchDate;
+            order.IsDispatched = orderRequest.IsDispatched;
+
+            return await Task.FromResult(order);
+
         }
     }
 }
