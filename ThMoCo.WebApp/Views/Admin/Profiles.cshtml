@@ -1,0 +1,74 @@
+﻿@model List<ThMoCo.WebApp.Models.AppUserDTO>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Admin Panel</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/Admin/Index">Products</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Admin/Orders">Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Admin/Profiles">Profiles</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<h2>All Profiles</h2>
+@if (!Model.Any())
+{
+    <p>No orders found.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Profile ID</th>
+                <th>LastLogin</th>
+                <th>Name:</th>
+                <th>LastLogin</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                <tr>
+                    <td>@order.Id</td>
+                    <td>@order.LastLogin</td>
+                    <td>@order.Name</td>
+                    <td>@order.LastLogin</td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const orderModal = document.getElementById('orderModal');
+        orderModal.addEventListener('show.bs.modal', (event) => {
+            const button = event.relatedTarget; // Button that triggered the modal
+            const productId = button.getAttribute('data-product-id');
+            const productName = button.getAttribute('data-product-name');
+
+            // Populate modal with product details
+            const productIdInput = document.getElementById('productId');
+            productIdInput.value = productId;
+
+            const modalTitle = document.getElementById('orderModalLabel');
+            modalTitle.textContent = `Order Product: ${productName}`;
+        });
+    });
+</script>

@@ -4,11 +4,11 @@ namespace ThMoCo.WebApp.IServices
 {
     public interface IAdminService
     {
-        Task<List<OrderDTO>> GetAllOrdersForUserAsync(int userId);
-        Task<List<OrderDTO>> GetAllOrdersAsync(); 
-        Task<List<AppUserDTO>> GetAllUsersAsync();
-        Task<AppUserDTO> GetUserAsync();
-        Task<OrderDTO> UpdateOrderStatusAsync(UpdateOrderStatusRequest orderRequest);
-
+        Task<List<OrderDTO>> GetAllOrders();
+        Task<List<AppUserDTO>> GeAlltUsers(); 
+        Task<List<OrderDTO>> GetOrdersToDispatch();
+        Task MarkOrderAsDispatched(int orderId);
+        Task<AppUserDTO> GetCustomerProfile(int userId);
+        Task DeleteCustomerAccount(int userId);
     }
 }

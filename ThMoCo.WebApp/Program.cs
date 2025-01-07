@@ -18,7 +18,10 @@ builder.Services.AddHttpClient<IOrderService, OrderService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["Values:BaseAddress"]);
 });
-
+builder.Services.AddHttpClient<IAdminService, AdminService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Values:BaseAddress"]);
+});
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
 builder.Services.AddHttpContextAccessor();
