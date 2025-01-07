@@ -7,6 +7,7 @@ using System.Security.Claims;
 using ThMoCo.WebApp.Models;
 using ThMoCo.WebApp.IServices;
 using System.IO;
+using ThMoCo.WebApp.DTO;
 
 namespace ThMoCo.WebApp.Controllers
 {

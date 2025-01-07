@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace ThMoCo.Api.DTO;
+namespace ThMoCo.Api.Models;
 
 public class OrderItem
 {
-    [Key]  
+    [Key]
     public int Id { get; set; } // Do NOT manually set Identity
 
     public int OrderId { get; set; } //  Foreign Key

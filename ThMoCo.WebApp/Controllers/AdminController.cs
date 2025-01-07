@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using ThMoCo.WebApp.IServices;
 using Microsoft.AspNetCore.Authentication;
 using System.Net.Http.Headers;
+using ThMoCo.WebApp.DTO;
 
 namespace ThMoCo.WebApp.Controllers;
 

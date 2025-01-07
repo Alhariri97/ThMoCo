@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using ThMoCo.Api.Controllers;
 using ThMoCo.Api.DTO;
 using ThMoCo.Api.IServices;
+using ThMoCo.Api.Models;
 
 namespace ThMoCo.Tests.UnitTests;
 

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ThMoCo.WebApp.IServices;
-using ThMoCo.WebApp.Models;
 using ThMoCo.WebApp.Services;
 using System.Threading.Tasks;
+using ThMoCo.WebApp.DTO;
 
 namespace ThMoCo.WebApp.Controllers
 {

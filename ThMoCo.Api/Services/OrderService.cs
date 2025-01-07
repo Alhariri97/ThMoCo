@@ -1,8 +1,8 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using ThMoCo.Api.Data;
-using ThMoCo.Api.DTO;
 using ThMoCo.Api.IServices;
+using ThMoCo.Api.Models;
 
 namespace ThMoCo.Api.Services
 {

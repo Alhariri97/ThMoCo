@@ -1,11 +1,8 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using ThMoCo.Api.DTO;
+using ThMoCo.Api.Models;
 
 namespace ThMoCo.Tests.IntegrationTests;
 

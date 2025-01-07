@@ -2,6 +2,8 @@
 
 using Microsoft.EntityFrameworkCore;
 using ThMoCo.Api.DTO;
+using ThMoCo.Api.Models;
+
 /// <summary>
 /// dotnet ef migrations add WhatMigrationFor --context AppDbContext --output-dir Migrations
 /// dotnet ef database update
@@ -57,27 +59,27 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<OrderItem>()
             .Property(oi => oi.Id)
-            .ValueGeneratedOnAdd(); // ✅ Ensures SQL Server manages IDENTITY
+            .ValueGeneratedOnAdd(); // Ensures SQL Server manages IDENTITY
 
         modelBuilder.Entity<Order>()
             .HasMany(o => o.Items)
             .WithOne()
             .HasForeignKey(oi => oi.OrderId)
-            .OnDelete(DeleteBehavior.Restrict); // ✅ Avoids multiple cascade paths issue
+            .OnDelete(DeleteBehavior.Restrict); //  Avoids multiple cascade paths issue
 
 
         // 🔹 Fix Decimal Precision for Monetary Values
         modelBuilder.Entity<AppUser>()
             .Property(u => u.Fund)
-            .HasColumnType("decimal(18,2)"); // ✅ Prevents truncation
+            .HasColumnType("decimal(18,2)"); // Prevents truncation
 
         modelBuilder.Entity<Order>()
             .Property(o => o.TotalAmount)
-            .HasColumnType("decimal(18,2)"); // ✅ Ensures proper storage
+            .HasColumnType("decimal(18,2)"); // Ensures proper storage
 
         modelBuilder.Entity<OrderItem>()
             .Property(oi => oi.PricePerUnit)
-            .HasColumnType("decimal(18,2)"); // ✅ Fixes decimal precision issue
+            .HasColumnType("decimal(18,2)"); // Fixes decimal precision issue
 
     }
 }
