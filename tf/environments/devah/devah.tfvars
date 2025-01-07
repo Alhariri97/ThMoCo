@@ -1,10 +1,6 @@
 #################################################################
 #   Variables
 #################################################################
-subscription_id = "3082fee8-674a-4a60-b907-1dacbb084bc6"
-tenant_id = "c56d7918-fba9-457a-be40-4a25d4039385"
-# Deployment Engine Application Id
-client_id = "c45ce00d-e1d5-4f3f-8e2f-80f258d5938d"
 
 
 #Environment Name
