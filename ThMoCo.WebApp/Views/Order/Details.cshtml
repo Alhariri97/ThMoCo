@@ -10,6 +10,8 @@
     <h3>Order ID: @Model.Id</h3>
     <p><strong>Number of Items:</strong> @Model.Items.Count</p>
     <p><strong>Total Price:</strong> £@Model.Items.Sum(item => item.Quantity * item.PricePerUnit)</p>
+    <p><strong>Status:</strong> @(Model.IsDispatched ? "Order dispatched" : "Waiting for dispatch")</p>
+
 </div>
 
 <h4>Items</h4>
@@ -20,6 +22,8 @@
             <th>Quantity</th>
             <th>Price Per Unit</th>
             <th>Total Price</th>
+            <th>Status</th>
+
         </tr>
     </thead>
     <tbody>
@@ -30,6 +34,7 @@
                 <td>@item.Quantity</td>
                 <td>£@item.PricePerUnit</td>
                 <td>£@(item.Quantity * item.PricePerUnit)</td>
+
             </tr>
         }
     </tbody>
