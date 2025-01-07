@@ -5,6 +5,7 @@ using ThMoCo.Api.IServices;
 using ThMoCo.Api.Controllers;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using ThMoCo.Api.Models;
 
 namespace ThMoCo.Tests.UnitTests;
 

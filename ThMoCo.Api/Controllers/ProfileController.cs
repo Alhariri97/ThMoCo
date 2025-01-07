@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using ThMoCo.Api.DTO;
 using ThMoCo.Api.IServices;
+using ThMoCo.Api.Models;
 
 namespace ThMoCo.Api.Controllers;
 

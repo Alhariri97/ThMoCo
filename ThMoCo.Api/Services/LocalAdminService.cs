@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ThMoCo.Api.DTO;
+﻿
 using ThMoCo.Api.IServices;
+using ThMoCo.Api.Models;
 
 namespace ThMoCo.Api.Services;
 

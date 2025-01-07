@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using ThMoCo.WebApp.DTO;
 using ThMoCo.WebApp.IServices;
 using ThMoCo.WebApp.Models;
 

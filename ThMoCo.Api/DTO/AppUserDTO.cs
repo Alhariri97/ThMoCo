@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using ThMoCo.Api.Models;
 
 namespace ThMoCo.Api.DTO;
 
@@ -13,7 +14,7 @@ public class AppUserDTO
     public decimal? Fund { get; set; }
     public DateTime? UpdatedAt { get; set; }
     public DateTime? LastLogin { get; set; }
-    public string? Provider { get; set; } // e.g., "auth0", "google", "facebook"
+    public string? Provider { get; set; } // 
     public string? Role { get; set; } // User's role
     public bool? IsEmailVerified { get; set; }
 

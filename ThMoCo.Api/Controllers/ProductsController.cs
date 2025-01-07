@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using ThMoCo.Api.DTO;
 using ThMoCo.Api.IServices;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-
+using ThMoCo.Api.Models;
 namespace ThMoCo.Api.Controllers;
 
 [ApiController]
