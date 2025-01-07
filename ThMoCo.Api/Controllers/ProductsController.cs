@@ -75,15 +75,3 @@ public class ProductsController : ControllerBase
 
 }
 
-
-[Authorize(Roles = "admin")]
-[Route("api/[controller]")]
-public class AdminController : ControllerBase
-{
-    // Only users with the "admin" role can access
-    [HttpGet("secret")]
-    public IActionResult GetSecret()
-    {
-        return Ok("You are an admin!");
-    }
-}
