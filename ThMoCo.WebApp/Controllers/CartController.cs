@@ -8,10 +8,12 @@ namespace ThMoCo.WebApp.Controllers
 {
     public class CartController : Controller
     {
+
         private readonly CartService _cartService;
         private readonly IProductService _productService;
 
-        public CartController(CartService cartService, IProductService productService)
+        public CartController(CartService cartService,
+            IProductService productService)
         {
             _cartService = cartService;
             _productService = productService;
