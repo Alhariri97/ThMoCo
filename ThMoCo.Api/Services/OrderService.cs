@@ -54,6 +54,10 @@ namespace ThMoCo.Api.Services
             {
                 throw new Exception("Insufficient funds to complete this purchase.");
             }
+            if ( string.IsNullOrEmpty(existingUser.PhoneNumber))
+            {
+                throw new Exception("Phonw number must exist to complete this purchase.");
+            }
 
             // Validate product stock
             foreach (var item in orderRequest.Items)
@@ -168,6 +172,29 @@ namespace ThMoCo.Api.Services
             return orders;
         }
 
+        public async Task<Order> UpdateOrderAsync(int id, Order orderRequest)
+        {
+            if (orderRequest == null)
+            {
+                throw new ArgumentNullException(nameof(orderRequest));
+            }
+
+            var existingOrder = await _context.Orders.FindAsync(id);
+
+            if (existingOrder == null)
+            {
+                throw new KeyNotFoundException($"Order with ID {id} not found.");
+            }
+
+            existingOrder.IsDispatched = orderRequest.IsDispatched;
+            existingOrder.TotalAmount = orderRequest.TotalAmount;
+            existingOrder.DispatchDate = orderRequest.DispatchDate;
+            existingOrder.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return existingOrder;
+        }
     }
 
 }

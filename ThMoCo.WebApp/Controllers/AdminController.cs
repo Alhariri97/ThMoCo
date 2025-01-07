@@ -14,12 +14,15 @@ public class AdminController : Controller
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IProductService _productService;
+    private readonly IAdminService _adminService;
 
     public AdminController(IHttpClientFactory httpClientFactory,
-        IProductService productService)
+        IProductService productService,
+        IAdminService adminService)
     {
         _httpClientFactory = httpClientFactory;
         _productService = productService;
+        _adminService = adminService;
     }
 
     public async Task<IActionResult> Index()
@@ -95,5 +98,21 @@ public class AdminController : Controller
             Category = supplierProduct.CategoryName,
             StockQuantity = quantity // Use the ordered quantity as the new stock
         };
+    }
+
+    public async Task<IActionResult> Orders()
+    {
+        var orders = await _adminService.GetAllOrdersAsync();
+        return View(orders);
+    }
+    public async Task<IActionResult> Orders(int id)
+    {
+        var orders = await _adminService.GetAllOrdersForUserAsync(id);
+        return View(orders);
+    }
+    public async Task<IActionResult> Profiles()
+    {
+        var profiles = await _adminService.GetAllUsersAsync();
+        return View(profiles);
     }
 }
