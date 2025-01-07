@@ -1,4 +1,4 @@
-﻿namespace ThMoCo.WebApp.Models;
+﻿namespace ThMoCo.WebApp.DTO;
 
 public class PaymentCardDTO
 {

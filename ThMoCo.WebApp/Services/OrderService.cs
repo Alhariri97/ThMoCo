@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using System.Net.Http.Headers;
+using ThMoCo.WebApp.DTO;
 using ThMoCo.WebApp.IServices;
 using ThMoCo.WebApp.Models;
 

@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ThMoCo.Api.DTO;
 using ThMoCo.Api.IServices;
-using static System.Net.Mime.MediaTypeNames;
+using ThMoCo.Api.Models;
 
 
 namespace ThMoCo.Api.Controllers;
@@ -182,35 +181,3 @@ public class OrderController : ControllerBase
         }
     }
 }
-///YourSolution
-//  /YourApp(ASP.NET Core application)
-//    /Controllers
-//      OrdersController.cs
-//      ProductsController.cs
-//      ProfileController.cs
-//    /Services
-//      OrderService.cs
-//      ProductService.cs
-//      ProfileService.cs
-//    /Repositories
-//      OrderRepository.cs
-//      ProductRepository.cs
-//      ProfileRepository.cs
-//  /YourApp.Tests (Unit and Integration Test Project)
-//    /UnitTests
-//      /Controllers
-//        OrdersControllerTests.cs
-//        ProductsControllerTests.cs
-//        ProfileControllerTests.cs
-//      /Services
-//        OrderServiceTests.cs
-//        ProductServiceTests.cs
-//        ProfileServiceTests.cs
-//      /Repositories
-//        OrderRepositoryTests.cs
-//        ProductRepositoryTests.cs
-//        ProfileRepositoryTests.cs
-//    /IntegrationTests
-//      OrdersEndpointsTests.cs
-//      ProductsEndpointsTests.cs
-//      ProfileEndpointsTests.cs

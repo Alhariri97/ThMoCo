@@ -1,4 +1,4 @@
-﻿using ThMoCo.WebApp.Models;
+﻿using ThMoCo.WebApp.DTO;
 
 namespace ThMoCo.WebApp.IServices;
 

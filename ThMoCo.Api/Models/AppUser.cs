@@ -1,4 +1,4 @@
-﻿namespace ThMoCo.Api.DTO;
+﻿namespace ThMoCo.Api.Models;
 
 
 public class AppUser

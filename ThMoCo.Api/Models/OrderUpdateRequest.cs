@@ -1,4 +1,6 @@
-﻿namespace ThMoCo.Api.DTO;
+﻿using ThMoCo.Api.DTO;
+
+namespace ThMoCo.Api.Models;
 
 public class OrderUpdateRequest
 {

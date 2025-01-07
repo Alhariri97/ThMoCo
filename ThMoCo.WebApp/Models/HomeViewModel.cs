@@ -1,4 +1,6 @@
-﻿namespace ThMoCo.WebApp.Models
+﻿using ThMoCo.WebApp.DTO;
+
+namespace ThMoCo.WebApp.Models
 {
     public class HomeViewModel
     {

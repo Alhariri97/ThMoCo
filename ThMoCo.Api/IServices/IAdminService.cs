@@ -1,4 +1,4 @@
-﻿using ThMoCo.Api.DTO;
+﻿using ThMoCo.Api.Models;
 
 namespace ThMoCo.Api.IServices
 {
