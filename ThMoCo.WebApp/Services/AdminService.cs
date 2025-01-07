@@ -1,33 +1,72 @@
-﻿using ThMoCo.WebApp.IServices;
+﻿
+using Microsoft.AspNetCore.Authentication;
+using System.Net.Http.Headers;
+using ThMoCo.WebApp.IServices;
 using ThMoCo.WebApp.Models;
 
-namespace ThMoCo.WebApp.Services
+namespace ThMoCo.WebApp.Services;
+
+public class AdminService : IAdminService
 {
-    public class AdminService : IAdminService
+    private readonly HttpClient _httpClient;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    public AdminService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
     {
-        public Task<List<OrderDTO>> GetAllOrdersAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<OrderDTO>> GetAllOrdersForUserAsync(int userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<AppUserDTO>> GetAllUsersAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<AppUserDTO> GetUserAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<OrderDTO> UpdateOrderStatusAsync(UpdateOrderStatusRequest orderRequest)
-        {
-            throw new NotImplementedException();
-        }
+        _httpClient = httpClient;
+        _httpContextAccessor = httpContextAccessor;
     }
+
+    public async Task<List<OrderDTO>> GetAllOrders()
+    {
+        CreateAuthenticatedClientAsync();
+        return await _httpClient.GetFromJsonAsync<List<OrderDTO>>($"api/admin/orders");
+    }
+
+    public async Task<List<AppUserDTO>> GeAlltUsers()
+    {
+        CreateAuthenticatedClientAsync();
+        return await _httpClient.GetFromJsonAsync<List<AppUserDTO>>("api/admin/customers");
+    }
+
+    public async Task<List<OrderDTO>> GetOrdersToDispatch()
+    {
+        CreateAuthenticatedClientAsync();
+        return await _httpClient.GetFromJsonAsync<List<OrderDTO>>("api/admin/orders/dispatch");
+    }
+
+    public async Task MarkOrderAsDispatched(int orderId)
+    {
+        CreateAuthenticatedClientAsync();
+        var response = await _httpClient.PutAsync($"api/admin/orders/{orderId}/dispatch", null);
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task<AppUserDTO> GetCustomerProfile(int userId)
+    {
+        CreateAuthenticatedClientAsync();
+        return await _httpClient.GetFromJsonAsync<AppUserDTO>($"api/admin/customers/{userId}");
+    }
+
+    public async Task DeleteCustomerAccount(int userId)
+    {
+        CreateAuthenticatedClientAsync();
+        var response = await _httpClient.DeleteAsync($"api/admin/customers/{userId}");
+        response.EnsureSuccessStatusCode();
+    }
+
+    private async Task<HttpClient> CreateAuthenticatedClientAsync()
+    {
+        // Retrieve the access token from the current HTTP context
+        var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync("access_token");
+
+        if (!string.IsNullOrEmpty(accessToken))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        }
+
+        return _httpClient;
+    }
+
+
 }
